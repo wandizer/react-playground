@@ -1,34 +1,24 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { Header } from "./components/Header/Header";
+import ImgReactVirtual from "./assets/tanstack-react-virtual.png";
+import { SectionCard } from "./components/SectionCard/SectionCard";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <Header />
+      <main className="m-4 gap-4 flex flex-wrap">
+        <SectionCard
+          img={{ src: ImgReactVirtual, alt: "react-virtual" }}
+          title="Horizontal Virtual Slide"
+          description="Example of a horizontal virtual slide using react-virtual from TanStack."
+          tags={["react", "virtual", "horizontal"]}
+          renderOverlay
+          onClick={() => console.log("clicked")}
+        />
+        <SectionCard renderOverlay />
+        <SectionCard renderOverlay />
+      </main>
+    </div>
   );
 }
 
