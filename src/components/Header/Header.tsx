@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 export type HeaderProps = {
   children?: React.ReactNode;
 };
@@ -13,36 +15,20 @@ export function Header(): JSX.Element {
       <nav id="nav" className="basis-full grow-1">
         <ul role="menubar" className="flex flex-row gap-2">
           <li role="menuitem">
-            <a
+            <Link
               className="focus:outline-gray-300 focus:focus:outline-offset-2 hover:bg-gray-100 hover:text-primary font-medium py-1 px-3 rounded"
-              href="/"
+              to="/"
             >
               Home
-            </a>
+            </Link>
           </li>
           <li role="menuitem">
-            <a
+            <Link
               className="focus:outline-gray-300 focus:focus:outline-offset-2 hover:bg-gray-100 hover:text-primary font-medium py-1 px-3 rounded"
-              href="/"
-            >
-              Products
-            </a>
-          </li>
-          <li role="menuitem">
-            <a
-              className="focus:outline-gray-300 focus:focus:outline-offset-2 hover:bg-gray-100 hover:text-primary font-medium py-1 px-3 rounded"
-              href="/"
-            >
-              Services
-            </a>
-          </li>
-          <li role="menuitem">
-            <a
-              className="focus:outline-gray-300 focus:focus:outline-offset-2 hover:bg-gray-100 hover:text-primary font-medium py-1 px-3 rounded"
-              href="/"
+              to="/about"
             >
               About
-            </a>
+            </Link>
           </li>
         </ul>
       </nav>
