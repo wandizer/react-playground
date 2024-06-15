@@ -21,7 +21,7 @@ const LinkOverlay = (to: string) => (
 
 function Index() {
   return (
-    <main className="m-4 gap-4 flex flex-wrap">
+    <main className="pt-20 m-4 gap-4 flex flex-wrap">
       <SectionCard
         img={{ src: ImgReactVirtual, alt: "react-virtual" }}
         title="Horizontal Virtual Slide"

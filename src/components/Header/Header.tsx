@@ -6,7 +6,7 @@ export type HeaderProps = {
 
 export function Header(): JSX.Element {
   return (
-    <header className="flex items-center h-16 px-4 bg-white border-b gap-4">
+    <header className="flex items-center h-16 w-full px-4 bg-white border-b gap-4 fixed z-20">
       <div id="brand" className="flex items-center text-primary gap-2">
         <h1 className="text-xl whitespace-nowrap">
           WanDizer/<b>React-Playground</b>
