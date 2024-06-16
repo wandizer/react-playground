@@ -13,6 +13,7 @@
     "@tanstack/react-router": "^1.38.1",
     "@tanstack/react-virtual": "^3.5.1",
     "classnames": "^2.5.1",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -20,6 +21,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tanstack/router-devtools": "^1.38.1",
     "@tanstack/router-vite-plugin": "^1.38.0",
+    "@types/lodash": "^4.17.5",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
