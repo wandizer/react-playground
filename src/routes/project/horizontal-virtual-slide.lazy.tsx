@@ -34,12 +34,40 @@ const getCurrentIndexFromRange = (
   return startIndex;
 };
 
+/**
+ * Helper function that shrinks width to maintain aspect ratio. Useful for responsive design.
+ * @param aspectRatio - The aspect ratio of the element. E.g. "16:9"
+ * @param width - The width of the element.
+ * @returns The available width of the element, within the aspect ratio and container's height.
+ */
+const getMinRatioWidth = (
+  aspectRatio: string = "16:9",
+  container?: { innerHeight: number; innerWidth: number },
+) => {
+  const { innerHeight, innerWidth } = container || window;
+  const [aspectWidth, aspectHeight] = aspectRatio.split(":").map(Number);
+  const ratio = aspectWidth / aspectHeight;
+  const maxWidth = innerHeight * ratio;
+  return Math.min(maxWidth, innerWidth);
+};
+
 function HorizontalVirtualSlide() {
   const [currentIndex, setCurrentIndex] = useState(0);
   // const currentIndex = useRef(0);
   const parentRef = useRef<HTMLDivElement>(null);
   const length = 50;
-  const paddingX = 100; // in px
+  const minPaddingX = 100; // in px
+  const estimatedSize = getMinRatioWidth(
+    "16:9",
+    parentRef.current
+      ? {
+          innerHeight: parentRef.current.clientHeight,
+          innerWidth: parentRef.current.clientWidth - minPaddingX * 2,
+        }
+      : undefined,
+  );
+
+  const paddingX = (window.innerWidth - estimatedSize) / 2; // in px
   const isFirst = currentIndex === 0;
   const isLast = currentIndex === length - 1;
 
@@ -47,16 +75,19 @@ function HorizontalVirtualSlide() {
     horizontal: true,
     count: length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => window.innerWidth - 200,
-    overscan: 3,
+    estimateSize: () => estimatedSize,
+    overscan: 5, // Sweet spot for quick swipe scroll
     paddingStart: paddingX,
     paddingEnd: paddingX,
     scrollPaddingStart: paddingX,
     scrollPaddingEnd: paddingX,
+    isScrollingResetDelay: 500,
     onChange(instance) {
       // Update the current index on scroll
       const alignedIndex = getCurrentIndexFromRange(instance.range);
-      setCurrentIndex(alignedIndex);
+      if (alignedIndex !== currentIndex) {
+        setCurrentIndex(alignedIndex);
+      }
     },
   });
 
@@ -70,7 +101,8 @@ function HorizontalVirtualSlide() {
   const handleSmoothScroll = useCallback(
     (index: number) => {
       columnVirtualizer.scrollToIndex(index, {
-        behavior: "smooth",
+        // ! Buggy
+        // behavior: "smooth",
       });
     },
     [columnVirtualizer],
@@ -90,10 +122,10 @@ function HorizontalVirtualSlide() {
 
   return (
     <main className="pt-16">
-      <h1 className="text-3xl font-bold text-center mt-2">
+      <h1 className="text-3xl font-bold text-center py-2">
         Horizontal Virtual Slide
       </h1>
-      <div className="absolute top-0 bottom-0 h-screen flex flex-col justify-center z-0">
+      <div className="absolute top-0 bottom-0 mt-32 mb-8 flex flex-col justify-center z-0">
         {/* Previous button */}
         {!isFirst && (
           <button
@@ -103,16 +135,15 @@ function HorizontalVirtualSlide() {
             ◀️
           </button>
         )}
-
         {/* Horizontal Virtual Slide */}
         <div
           ref={parentRef}
-          // * scroll-px-[100px] = paddingX
-          className="snap-x snap-always snap-mandatory scroll-px-[100px] overflow-x-auto no-scrollbar w-screen aspect-video"
+          className="snap-x snap-always snap-mandatory overflow-x-auto no-scrollbar w-screen h-full"
         >
           <div
-            className="relative h-full"
+            className="relative top-1/2 transform -translate-y-1/2"
             style={{
+              height: `${(estimatedSize / 16) * 9}px`,
               width: `${columnVirtualizer.getTotalSize()}px`,
             }}
           >
@@ -122,7 +153,7 @@ function HorizontalVirtualSlide() {
               return (
                 <div
                   key={virtualColumn.index}
-                  className={"h-full absolute top-0 left-0 snap-center"}
+                  className={"absolute top-0 left-0 snap-center aspect-video"}
                   style={{
                     width: `${virtualColumn.size}px`,
                     transform: `translateX(${virtualColumn.start}px)`,
@@ -135,7 +166,7 @@ function HorizontalVirtualSlide() {
                     className={classNames(
                       "w-full h-full bg-black flex items-center justify-center text-white text-2xl font-bold",
                       {
-                        "scale-90 aspect-video transform transition-all duration-500 ease-in-out":
+                        "scale-90 transform transition-all duration-500 ease-in-out":
                           !isCurrent,
                       },
                     )}
@@ -147,7 +178,6 @@ function HorizontalVirtualSlide() {
             })}
           </div>
         </div>
-
         {/* Next button */}
         {!isLast && (
           <button
