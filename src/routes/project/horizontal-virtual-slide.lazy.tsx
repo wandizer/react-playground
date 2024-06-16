@@ -1,7 +1,8 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useVirtualizer } from "@tanstack/react-virtual";
+import { useVirtualizer, Virtualizer } from "@tanstack/react-virtual";
 import classNames from "classnames";
-import { useCallback, useEffect, useRef, useState } from "react";
+import debounce from "lodash/debounce";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export const Route = createLazyFileRoute("/project/horizontal-virtual-slide")({
   component: HorizontalVirtualSlide,
@@ -53,23 +54,27 @@ const getMinRatioWidth = (
 
 function HorizontalVirtualSlide() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  // const currentIndex = useRef(0);
   const parentRef = useRef<HTMLDivElement>(null);
-  const length = 50;
-  const minPaddingX = 100; // in px
+  const length = 50; // Number of columns
+  const minPaddingX = 100; // Minimum padding in px
+  const bottomPadding = 80; // Bottom padding in px (also used for info height)
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === length - 1;
+
   const estimatedSize = getMinRatioWidth(
     "16:9",
     parentRef.current
       ? {
-          innerHeight: parentRef.current.clientHeight,
+          innerHeight: parentRef.current.clientHeight - bottomPadding,
           innerWidth: parentRef.current.clientWidth - minPaddingX * 2,
         }
       : undefined,
   );
 
-  const paddingX = (window.innerWidth - estimatedSize) / 2; // in px
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === length - 1;
+  const paddingX = useMemo(
+    () => (window.innerWidth - estimatedSize) / 2,
+    [estimatedSize],
+  );
 
   const columnVirtualizer = useVirtualizer({
     horizontal: true,
@@ -81,44 +86,43 @@ function HorizontalVirtualSlide() {
     paddingEnd: paddingX,
     scrollPaddingStart: paddingX,
     scrollPaddingEnd: paddingX,
-    isScrollingResetDelay: 500,
-    onChange(instance) {
-      // Update the current index on scroll
-      const alignedIndex = getCurrentIndexFromRange(instance.range);
-      if (alignedIndex !== currentIndex) {
-        setCurrentIndex(alignedIndex);
-      }
-    },
+    onChange: useCallback(
+      (instance: Virtualizer<HTMLDivElement, Element>) => {
+        // Update the current index on scroll
+        const alignedIndex = getCurrentIndexFromRange(instance.range);
+        if (alignedIndex !== currentIndex) {
+          setCurrentIndex(alignedIndex);
+        }
+      },
+      [currentIndex],
+    ),
   });
 
-  // Recalculate column widths on window resize
   useEffect(() => {
     const recalculateColumnWidths = () => columnVirtualizer.measure();
-    window.addEventListener("resize", recalculateColumnWidths);
-    return () => window.removeEventListener("resize", recalculateColumnWidths);
+    const debouncedResizeHandler = debounce(recalculateColumnWidths, 250);
+    window.addEventListener("resize", debouncedResizeHandler);
+    return () => window.removeEventListener("resize", debouncedResizeHandler);
   }, [columnVirtualizer]);
 
   const handleSmoothScroll = useCallback(
     (index: number) => {
-      columnVirtualizer.scrollToIndex(index, {
-        // ! Buggy
-        // behavior: "smooth",
-      });
+      columnVirtualizer.scrollToIndex(index, { behavior: "smooth" });
     },
     [columnVirtualizer],
   );
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
       handleSmoothScroll(currentIndex - 1);
     }
-  };
+  }, [currentIndex, handleSmoothScroll]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentIndex < length - 1) {
       handleSmoothScroll(currentIndex + 1);
     }
-  };
+  }, [currentIndex, handleSmoothScroll]);
 
   return (
     <main className="pt-16">
@@ -131,6 +135,7 @@ function HorizontalVirtualSlide() {
           <button
             onClick={handlePrev}
             className="absolute top-1/2 left-0 transform -translate-y-1/2 text-white text-xl p-4 bg-zinc-700 z-10"
+            style={{ marginTop: -(bottomPadding / 2) }}
           >
             ◀️
           </button>
@@ -143,7 +148,7 @@ function HorizontalVirtualSlide() {
           <div
             className="relative top-1/2 transform -translate-y-1/2"
             style={{
-              height: `${(estimatedSize / 16) * 9}px`,
+              height: `${(estimatedSize / 16) * 9 + bottomPadding}px`, // 80px for info
               width: `${columnVirtualizer.getTotalSize()}px`,
             }}
           >
@@ -160,18 +165,54 @@ function HorizontalVirtualSlide() {
                   }}
                   {...(!isCurrent && { "aria-hidden": true, inert: "true" })}
                 >
-                  {/* Cover */}
                   <div
-                    tabIndex={0}
                     className={classNames(
-                      "w-full h-full bg-black flex items-center justify-center text-white text-2xl font-bold",
+                      "w-full h-full transition-all duration-300 delay-150 ease-in-out",
                       {
-                        "scale-90 transform transition-all duration-500 ease-in-out":
-                          !isCurrent,
+                        "scale-90 transform": !isCurrent,
                       },
                     )}
                   >
-                    Column {virtualColumn.index}
+                    {/* Cover */}
+                    <div
+                      tabIndex={0}
+                      className={classNames(
+                        "w-full h-full bg-black flex items-center justify-center text-white text-2xl font-bold",
+                      )}
+                    >
+                      Column {virtualColumn.index}
+                    </div>
+                    {/* Info */}
+                    <div className="max-h-20 flex flex-row flex-nowrap">
+                      <div className="w-11/12">
+                        <h2 className="text-2xl truncate">
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Voluptatibus., Lorem ipsum dolor sit amet,
+                          consectetur adipisicing elit. Voluptatibus
+                        </h2>
+                        <p className="line-clamp-2">
+                          Lorem ipsum dolor sit amet, consectetur adipisicing
+                          elit. Voluptatibus. Lorem ipsum dolor sit amet,
+                          consectetur adipisicing elit. Voluptatibus. Lorem
+                          ipsum dolor sit amet, consectetur adipisicing elit.
+                          Voluptatibus Lorem ipsum dolor sit amet, consectetur
+                          adipisicing elit. VoluptatibusLorem ipsum dolor sit
+                          amet, consectetur adipisicing elit. VoluptatibusLorem
+                          ipsum dolor sit amet, consectetur adipisicing elit.
+                          VoluptatibusLorem ipsum dolor sit amet, consectetur
+                          adipisicing elit. VoluptatibusLorem ipsum dolor sit
+                          amet, consectetur adipisicing elit. Voluptatibus
+                        </p>
+                      </div>
+                      <div className="w-1/12 flex items-center justify-center">
+                        <button
+                          type="button"
+                          className="w-12 h-12 rounded-full bg-black"
+                        >
+                          💟
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -183,6 +224,7 @@ function HorizontalVirtualSlide() {
           <button
             onClick={handleNext}
             className="absolute top-1/2 right-0 transform -translate-y-1/2 text-white text-xl p-4 bg-zinc-700 z-10"
+            style={{ marginTop: -(bottomPadding / 2) }}
           >
             ▶️
           </button>
