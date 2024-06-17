@@ -9,33 +9,6 @@ export const Route = createLazyFileRoute("/project/horizontal-virtual-slide")({
 });
 
 /**
- * Helper function to get the current index from a range. Usually the middle index of the range.
- * @param startIndex - The start index of the range that is currently visible.
- * @param endIndex - The end index of the range that is currently visible.
- * @returns The current index from the range.
- * @example
- *  getCurrentIndexFromRange({ startIndex: 0, endIndex: 2 }) // 1 // Middle index
- *  getCurrentIndexFromRange({ startIndex: 0, endIndex: 1 }) // 0 // No previous index
- *  getCurrentIndexFromRange({ startIndex: 1, endIndex: 2 }) // 2 // No next index
- */
-const getCurrentIndexFromRange = (
-  range: { startIndex: number; endIndex: number } | null,
-): number => {
-  const { startIndex, endIndex } = range || { startIndex: 0, endIndex: 0 };
-  const diff = endIndex - startIndex;
-  // Middle index
-  if (diff === 2) {
-    return startIndex + 1;
-  }
-  // No next index
-  if (diff === 1 && startIndex !== 0) {
-    return endIndex;
-  }
-  // No previous index
-  return startIndex;
-};
-
-/**
  * Helper function that shrinks width to maintain aspect ratio. Useful for responsive design.
  * @param aspectRatio - The aspect ratio of the element. E.g. "16:9"
  * @param width - The width of the element.
@@ -76,6 +49,24 @@ function HorizontalVirtualSlide() {
     [estimatedSize],
   );
 
+  // Debounced function to update current index
+  const debouncedUpdateCurrentIndex = useMemo(() => {
+    return debounce((instance: Virtualizer<HTMLDivElement, Element>) => {
+      const { scrollOffset, measurementsCache } = instance;
+      const [cachedFirstItem] = measurementsCache;
+      const cachedItemSize = cachedFirstItem?.size;
+      const estimatedIndex = Math.round(scrollOffset / cachedItemSize);
+      setCurrentIndex((prevIndex) =>
+        estimatedIndex !== prevIndex ? estimatedIndex : prevIndex,
+      );
+    }, 250);
+  }, []);
+
+  // Unmount cleanup of debounced function
+  useEffect(() => {
+    return debouncedUpdateCurrentIndex.cancel();
+  }, [debouncedUpdateCurrentIndex]);
+
   const columnVirtualizer = useVirtualizer({
     horizontal: true,
     count: length,
@@ -86,16 +77,7 @@ function HorizontalVirtualSlide() {
     paddingEnd: paddingX,
     scrollPaddingStart: paddingX,
     scrollPaddingEnd: paddingX,
-    onChange: useCallback(
-      (instance: Virtualizer<HTMLDivElement, Element>) => {
-        // Update the current index on scroll
-        const alignedIndex = getCurrentIndexFromRange(instance.range);
-        if (alignedIndex !== currentIndex) {
-          setCurrentIndex(alignedIndex);
-        }
-      },
-      [currentIndex],
-    ),
+    onChange: debouncedUpdateCurrentIndex,
   });
 
   useEffect(() => {
@@ -143,7 +125,8 @@ function HorizontalVirtualSlide() {
         {/* Horizontal Virtual Slide */}
         <div
           ref={parentRef}
-          className="snap-x snap-always snap-mandatory overflow-x-auto no-scrollbar w-screen h-full"
+          id="scrollableElement"
+          className="snap-x snap-mandatory overflow-x-auto no-scrollbar w-screen h-full"
         >
           <div
             className="relative top-1/2 transform -translate-y-1/2"
