@@ -21,6 +21,9 @@ const IndexLazyImport = createFileRoute('/')()
 const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
   '/project/horizontal-virtual-slide',
 )()
+const ProjectDynamicModalLazyImport = createFileRoute(
+  '/project/dynamic-modal',
+)()
 
 // Create/Update Routes
 
@@ -44,6 +47,13 @@ const ProjectHorizontalVirtualSlideLazyRoute =
     ),
   )
 
+const ProjectDynamicModalLazyRoute = ProjectDynamicModalLazyImport.update({
+  path: '/project/dynamic-modal',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/project/dynamic-modal.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -62,6 +72,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/project/dynamic-modal': {
+      id: '/project/dynamic-modal'
+      path: '/project/dynamic-modal'
+      fullPath: '/project/dynamic-modal'
+      preLoaderRoute: typeof ProjectDynamicModalLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/project/horizontal-virtual-slide': {
       id: '/project/horizontal-virtual-slide'
       path: '/project/horizontal-virtual-slide'
@@ -77,6 +94,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
+  ProjectDynamicModalLazyRoute,
   ProjectHorizontalVirtualSlideLazyRoute,
 })
 
@@ -90,6 +108,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
+        "/project/dynamic-modal",
         "/project/horizontal-virtual-slide"
       ]
     },
@@ -98,6 +117,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/project/dynamic-modal": {
+      "filePath": "project/dynamic-modal.lazy.tsx"
     },
     "/project/horizontal-virtual-slide": {
       "filePath": "project/horizontal-virtual-slide.lazy.tsx"

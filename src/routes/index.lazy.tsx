@@ -6,14 +6,14 @@ export const Route = createLazyFileRoute("/")({
   component: Index,
 });
 
-const LinkOverlay = (to: string) => (
+const LinkOverlay = (to: string, msg = "Read more...") => (
   <Link to={to} className="absolute inset-x-0 inset-y-0 group">
     {/* Backdrop */}
     <div className="w-full h-full group-hover:backdrop-blur group-hover:bg-black/50" />
     {/* Content */}
     <div className="hidden group-hover:flex absolute inset-0 items-center justify-center">
-      <h1 className="text-white text-2xl font-bold drop-shadow-2xl">
-        Read more...
+      <h1 className="text-white text-2xl font-bold drop-shadow-2xl text-center">
+        {msg}
       </h1>
     </div>
   </Link>
@@ -21,7 +21,7 @@ const LinkOverlay = (to: string) => (
 
 function Index() {
   return (
-    <main className="pt-20 m-4 gap-4 flex flex-wrap">
+    <main className="m-4 gap-4 flex flex-wrap">
       <SectionCard
         img={{ src: ImgReactVirtual, alt: "react-virtual" }}
         title="Horizontal Virtual Slide"
@@ -30,10 +30,24 @@ function Index() {
         renderOverlay={() => LinkOverlay("/project/horizontal-virtual-slide")}
       />
       <SectionCard
-        renderOverlay={() => LinkOverlay("/project/horizontal-virtual-slide")}
+        title="Dynamic Modal"
+        description="Example of a dynamic modal using headlessui/react."
+        tags={["headlessui", "modal", "dynamic"]}
+        renderOverlay={() => LinkOverlay("/project/dynamic-modal")}
       />
       <SectionCard
-        renderOverlay={() => LinkOverlay("/project/horizontal-virtual-slide")}
+        renderOverlay={() => (
+          <div className="absolute inset-x-0 inset-y-0 group">
+            {/* Backdrop */}
+            <div className="w-full h-full group-hover:backdrop-blur group-hover:bg-black/50" />
+            {/* Content */}
+            <div className="hidden group-hover:flex absolute inset-0 items-center justify-center">
+              <h1 className="text-white text-2xl font-bold drop-shadow-2xl text-center">
+                Add a new project by adding a new file in the routes folder.
+              </h1>
+            </div>
+          </div>
+        )}
       />
     </main>
   );
