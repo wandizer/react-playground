@@ -1,6 +1,7 @@
-import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { SectionCard } from "../components/SectionCard/SectionCard";
 import ImgReactVirtual from "../assets/tanstack-react-virtual.png";
+import ImgCubicBezierArrows from "../assets/cubic-bezier-arrows.png";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -20,6 +21,8 @@ const LinkOverlay = (to: string, msg = "Read more...") => (
 );
 
 function Index() {
+  const navigate = useNavigate();
+
   return (
     <main className="m-4 gap-4 flex flex-wrap">
       <SectionCard
@@ -27,7 +30,14 @@ function Index() {
         title="Horizontal Virtual Slide"
         description="Example of a horizontal virtual slide using react-virtual from TanStack."
         tags={["react", "virtual", "horizontal"]}
-        renderOverlay={() => LinkOverlay("/project/horizontal-virtual-slide")}
+        onClick={() => navigate({ to: "/project/horizontal-virtual-slide" })}
+      />
+      <SectionCard
+        img={{ src: ImgCubicBezierArrows, alt: "cubic-bezier-arrows" }}
+        title="Cubic Bezier Arrows"
+        description="Example of cubic bezier arrows using SVG."
+        tags={["svg", "cubic-bezier", "arrows", "spatial-navigation"]}
+        onClick={() => navigate({ to: "/project/cubic-bezier-arrows" })}
       />
       <SectionCard
         title="Dynamic Modal"

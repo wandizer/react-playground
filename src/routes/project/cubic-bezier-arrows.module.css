@@ -1,0 +1,59 @@
+.CubicBezierArrows {
+  .box {
+    width: 100px;
+    height: 100px;
+    background: lightcoral;
+    position: absolute;
+    border-radius: 8px;
+  }
+
+  /* Current */
+  #box1 {
+    top: 250px;
+    left: 250px;
+  }
+
+  /* Top */
+  #box2 {
+    top: 50px;
+    left: 275px;
+  }
+
+  /* Right */
+  #box3 {
+    top: 150px;
+    left: 600px;
+  }
+
+  /* Bottom */
+  #box4 {
+    top: 500px;
+    left: 350px;
+  }
+
+  /* Left */
+  #box5 {
+    top: 300px;
+    left: 50px;
+  }
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100vw;
+    height: 100vh;
+    overflow: visible;
+
+    text {
+      fill: black;
+    }
+  }
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -15;
+  }
+}

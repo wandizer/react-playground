@@ -67,6 +67,9 @@ export function SectionCard({
       id={idToUse}
       className={classNames(
         "max-w-sm h-[27.5rem] w-[24rem] rounded overflow-hidden shadow-lg relative flex flex-col group",
+        "hover:shadow-2xl hover:scale-105 hover:-rotate-1 transition-transform duration-250",
+        "cursor-pointer",
+
         className,
       )}
       {...(onClick && { onClick, role: "button", tabIndex: 0 })}

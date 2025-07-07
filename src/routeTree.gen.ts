@@ -24,6 +24,9 @@ const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
 const ProjectDynamicModalLazyImport = createFileRoute(
   '/project/dynamic-modal',
 )()
+const ProjectCubicBezierArrowsLazyImport = createFileRoute(
+  '/project/cubic-bezier-arrows',
+)()
 
 // Create/Update Routes
 
@@ -54,6 +57,14 @@ const ProjectDynamicModalLazyRoute = ProjectDynamicModalLazyImport.update({
   import('./routes/project/dynamic-modal.lazy').then((d) => d.Route),
 )
 
+const ProjectCubicBezierArrowsLazyRoute =
+  ProjectCubicBezierArrowsLazyImport.update({
+    path: '/project/cubic-bezier-arrows',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/project/cubic-bezier-arrows.lazy').then((d) => d.Route),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -70,6 +81,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/project/cubic-bezier-arrows': {
+      id: '/project/cubic-bezier-arrows'
+      path: '/project/cubic-bezier-arrows'
+      fullPath: '/project/cubic-bezier-arrows'
+      preLoaderRoute: typeof ProjectCubicBezierArrowsLazyImport
       parentRoute: typeof rootRoute
     }
     '/project/dynamic-modal': {
@@ -94,6 +112,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
+  ProjectCubicBezierArrowsLazyRoute,
   ProjectDynamicModalLazyRoute,
   ProjectHorizontalVirtualSlideLazyRoute,
 })
@@ -108,6 +127,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
+        "/project/cubic-bezier-arrows",
         "/project/dynamic-modal",
         "/project/horizontal-virtual-slide"
       ]
@@ -117,6 +137,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/project/cubic-bezier-arrows": {
+      "filePath": "project/cubic-bezier-arrows.lazy.tsx"
     },
     "/project/dynamic-modal": {
       "filePath": "project/dynamic-modal.lazy.tsx"
