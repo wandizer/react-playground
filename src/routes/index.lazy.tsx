@@ -1,7 +1,8 @@
 import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { SectionCard } from "../components/SectionCard/SectionCard";
-import ImgReactVirtual from "../assets/tanstack-react-virtual.png";
 import ImgCubicBezierArrows from "../assets/cubic-bezier-arrows.png";
+import ImgReactVirtual from "../assets/tanstack-react-virtual.png";
+import ImgVideoImmersion from "../assets/video-immersion.png";
+import { SectionCard } from "../components/SectionCard/SectionCard";
 
 export const Route = createLazyFileRoute("/")({
   component: Index,
@@ -44,6 +45,13 @@ function Index() {
         description="Example of a dynamic modal using headlessui/react."
         tags={["headlessui", "modal", "dynamic"]}
         renderOverlay={() => LinkOverlay("/project/dynamic-modal")}
+      />
+      <SectionCard
+        img={{ src: ImgVideoImmersion, alt: "video-immersion" }}
+        title="Video Portal/Embedded immersion"
+        description="Example video immersion inside the app."
+        tags={["video", "portal", "immersion"]}
+        onClick={() => navigate({ to: "/project/video-immersion" })}
       />
       <SectionCard
         renderOverlay={() => (

@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 
 // Import the generated route tree
+import VideoPortal from "./components/VideoImmersion/VideoPortal";
 import { routeTree } from "./routeTree.gen";
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -16,6 +17,8 @@ declare module "@tanstack/react-router" {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <VideoPortal>
+      <RouterProvider router={router} />
+    </VideoPortal>
   </React.StrictMode>,
 );

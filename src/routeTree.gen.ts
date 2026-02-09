@@ -18,6 +18,9 @@ import { Route as rootRoute } from './routes/__root'
 
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
+const ProjectVideoImmersionLazyImport = createFileRoute(
+  '/project/video-immersion',
+)()
 const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
   '/project/horizontal-virtual-slide',
 )()
@@ -39,6 +42,13 @@ const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const ProjectVideoImmersionLazyRoute = ProjectVideoImmersionLazyImport.update({
+  path: '/project/video-immersion',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/project/video-immersion.lazy').then((d) => d.Route),
+)
 
 const ProjectHorizontalVirtualSlideLazyRoute =
   ProjectHorizontalVirtualSlideLazyImport.update({
@@ -104,6 +114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectHorizontalVirtualSlideLazyImport
       parentRoute: typeof rootRoute
     }
+    '/project/video-immersion': {
+      id: '/project/video-immersion'
+      path: '/project/video-immersion'
+      fullPath: '/project/video-immersion'
+      preLoaderRoute: typeof ProjectVideoImmersionLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -115,6 +132,7 @@ export const routeTree = rootRoute.addChildren({
   ProjectCubicBezierArrowsLazyRoute,
   ProjectDynamicModalLazyRoute,
   ProjectHorizontalVirtualSlideLazyRoute,
+  ProjectVideoImmersionLazyRoute,
 })
 
 /* prettier-ignore-end */
@@ -129,7 +147,8 @@ export const routeTree = rootRoute.addChildren({
         "/about",
         "/project/cubic-bezier-arrows",
         "/project/dynamic-modal",
-        "/project/horizontal-virtual-slide"
+        "/project/horizontal-virtual-slide",
+        "/project/video-immersion"
       ]
     },
     "/": {
@@ -146,6 +165,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/project/horizontal-virtual-slide": {
       "filePath": "project/horizontal-virtual-slide.lazy.tsx"
+    },
+    "/project/video-immersion": {
+      "filePath": "project/video-immersion.lazy.tsx"
     }
   }
 }
