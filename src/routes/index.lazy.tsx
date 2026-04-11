@@ -48,8 +48,9 @@ function Index() {
       />
       <SectionCard
         img={{ src: ImgVideoImmersion, alt: "video-immersion" }}
-        title="Video Portal/Embedded immersion"
-        description="Example video immersion inside the app."
+        title="Video immersion"
+        description="Example video immersion inside the app, where the video can be moved freely
+         between different containers while keeping the playback state intact."
         tags={["video", "portal", "immersion"]}
         onClick={() => navigate({ to: "/project/video-immersion" })}
       />

@@ -1,20 +1,28 @@
 import { useEffect, useRef } from "react";
-import { useVideoPortal } from "./useVideoPortal";
+import { useVideo } from "./context/useVideo";
 
-function VideoEmbedded({ videoId }: { videoId: string }) {
+type VideoEmbeddedProps = {
+  videoId: string;
+  isActive?: boolean;
+};
+
+function VideoEmbedded({ videoId, isActive = true }: VideoEmbeddedProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const { setContainer, setVideoId } = useVideoPortal();
+  const { setContainer, setVideoId } = useVideo();
 
   useEffect(() => {
+    if (!isActive) {
+      return;
+    }
     setContainer(ref.current);
     setVideoId(videoId); // Clear video when mounting
     return () => {
       // When this feature unmounts, release target
       setContainer(null);
     };
-  }, [setContainer, setVideoId, videoId]);
+  }, [setContainer, setVideoId, videoId, isActive]);
 
-  return <div ref={ref} style={{ width: "100%", height: "auto" }} />;
+  return <div ref={ref} className="w-full h-auto" />;
 }
 
 export default VideoEmbedded;
