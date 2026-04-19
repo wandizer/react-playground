@@ -55,7 +55,7 @@ export const drawDynamicCurvedArrow = (
   // Create path element
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("fill", "none");
-  path.setAttribute("stroke", "black");
+  path.setAttribute("stroke", "white");
   path.setAttribute("stroke-width", "2");
   path.setAttribute("marker-end", "url(#arrowhead)");
   path.setAttribute("stroke-dasharray", "10 5");

@@ -24,6 +24,9 @@ const ProjectVideoImmersionLazyImport = createFileRoute(
 const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
   '/project/horizontal-virtual-slide',
 )()
+const ProjectFastCarouselLazyImport = createFileRoute(
+  '/project/fast-carousel',
+)()
 const ProjectDynamicModalLazyImport = createFileRoute(
   '/project/dynamic-modal',
 )()
@@ -59,6 +62,13 @@ const ProjectHorizontalVirtualSlideLazyRoute =
       (d) => d.Route,
     ),
   )
+
+const ProjectFastCarouselLazyRoute = ProjectFastCarouselLazyImport.update({
+  path: '/project/fast-carousel',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/project/fast-carousel.lazy').then((d) => d.Route),
+)
 
 const ProjectDynamicModalLazyRoute = ProjectDynamicModalLazyImport.update({
   path: '/project/dynamic-modal',
@@ -107,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectDynamicModalLazyImport
       parentRoute: typeof rootRoute
     }
+    '/project/fast-carousel': {
+      id: '/project/fast-carousel'
+      path: '/project/fast-carousel'
+      fullPath: '/project/fast-carousel'
+      preLoaderRoute: typeof ProjectFastCarouselLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/project/horizontal-virtual-slide': {
       id: '/project/horizontal-virtual-slide'
       path: '/project/horizontal-virtual-slide'
@@ -131,6 +148,7 @@ export const routeTree = rootRoute.addChildren({
   AboutLazyRoute,
   ProjectCubicBezierArrowsLazyRoute,
   ProjectDynamicModalLazyRoute,
+  ProjectFastCarouselLazyRoute,
   ProjectHorizontalVirtualSlideLazyRoute,
   ProjectVideoImmersionLazyRoute,
 })
@@ -147,6 +165,7 @@ export const routeTree = rootRoute.addChildren({
         "/about",
         "/project/cubic-bezier-arrows",
         "/project/dynamic-modal",
+        "/project/fast-carousel",
         "/project/horizontal-virtual-slide",
         "/project/video-immersion"
       ]
@@ -162,6 +181,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/project/dynamic-modal": {
       "filePath": "project/dynamic-modal.lazy.tsx"
+    },
+    "/project/fast-carousel": {
+      "filePath": "project/fast-carousel.lazy.tsx"
     },
     "/project/horizontal-virtual-slide": {
       "filePath": "project/horizontal-virtual-slide.lazy.tsx"

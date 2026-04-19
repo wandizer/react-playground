@@ -19,4 +19,14 @@
       stroke-dashoffset: -15;
     }
   }
+
+  html,
+  body {
+    background-color: #000;
+  }
+
+  video {
+    height: 100%;
+    width: 100%;
+  }
 }

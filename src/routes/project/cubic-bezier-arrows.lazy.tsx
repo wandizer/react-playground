@@ -21,7 +21,7 @@ const BaseSVG = (
         refY="3.5"
         orient="auto"
       >
-        <polygon points="0 0, 10 3.5, 0 7" fill="black" />
+        <polygon points="0 0, 10 3.5, 0 7" fill="white" />
       </marker>
     </defs>
   </svg>

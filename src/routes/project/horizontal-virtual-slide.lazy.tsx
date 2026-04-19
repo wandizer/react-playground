@@ -172,7 +172,7 @@ function HorizontalVirtualSlide() {
                 <div
                   key={virtualItem.index}
                   className={classNames(
-                    "absolute top-0 left-0 snap-center aspect-video",
+                    "absolute top-0 left-0 snap-center aspect-video text-white",
                   )}
                   style={
                     !isSmallScreen
@@ -200,7 +200,7 @@ function HorizontalVirtualSlide() {
                     <div
                       tabIndex={0}
                       className={classNames(
-                        "w-full h-full bg-black flex items-center justify-center text-white text-2xl font-bold",
+                        "w-full h-full bg-white flex items-center justify-center text-black text-2xl font-bold",
                       )}
                     >
                       Item {virtualItem.index}

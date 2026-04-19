@@ -1,5 +1,6 @@
 import { createLazyFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import ImgCubicBezierArrows from "../assets/cubic-bezier-arrows.png";
+import ImgFastCarousel from "../assets/fast-carousel.png";
 import ImgReactVirtual from "../assets/tanstack-react-virtual.png";
 import ImgVideoImmersion from "../assets/video-immersion.png";
 import { SectionCard } from "../components/SectionCard/SectionCard";
@@ -53,6 +54,13 @@ function Index() {
          between different containers while keeping the playback state intact."
         tags={["video", "portal", "immersion"]}
         onClick={() => navigate({ to: "/project/video-immersion" })}
+      />
+      <SectionCard
+        img={{ src: ImgFastCarousel, alt: "fast-carousel" }}
+        title="Fast Carousel"
+        description="Example of a fast carousel using a custom crossfade technique."
+        tags={["carousel", "cross-fade", "animation", "performance"]}
+        onClick={() => navigate({ to: "/project/fast-carousel" })}
       />
       <SectionCard
         renderOverlay={() => (
