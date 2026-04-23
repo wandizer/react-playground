@@ -11,12 +11,11 @@ type CoverProps = {
 export function Cover({ isVisible, src, alt }: CoverProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const [isReady, setIsReady] = useState(false);
-  const setIsCoverReady = useFastCarousel((state) => state.setIsCoverReady);
 
   const handleOnReady = useCallback(() => {
     setIsReady(true);
-    setIsCoverReady(true);
-  }, [setIsCoverReady]);
+    useFastCarousel.getState().setIsCoverReady(true);
+  }, []);
 
   useEffect(() => {
     const image = imageRef.current;

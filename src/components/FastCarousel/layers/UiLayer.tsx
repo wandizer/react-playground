@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { TRANSITION_DURATION, useFastCarousel } from "../store/useFastCarousel";
+import { TRANSITION_DURATION } from "../store/useFastCarousel";
 
 type UiLayerProps = {
   title: string;
@@ -7,23 +7,18 @@ type UiLayerProps = {
   buttonText: string;
 };
 
+const style = { transitionDuration: `${TRANSITION_DURATION}ms` };
+
 export function UiLayer({
   title,
   description,
   buttonText,
 }: UiLayerProps): JSX.Element {
-  const isTransitioning = useFastCarousel((state) => state.isTransitioning);
-  const style = { transitionDuration: `${TRANSITION_DURATION}ms` };
-
   return (
     <div
       className={classNames(
         "w-full h-[calc(100vw/16*9*0.70)] z-20 flex flex-col items-start justify-end p-12 gap-4",
         "transition-opacity ease-linear",
-        {
-          "opacity-0": isTransitioning,
-          "opacity-100": !isTransitioning,
-        },
       )}
       style={style}
     >

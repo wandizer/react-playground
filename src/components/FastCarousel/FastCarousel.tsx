@@ -32,7 +32,6 @@ const coverSources = data.map((item) => ({
 }));
 
 function FastCarousel() {
-  const changeIndex = useFastCarousel((state) => state.changeIndex);
   const scrollerIndex = useFastCarousel((state) => state.scrollerIndex);
   const coverIndex = useFastCarousel((state) => state.coverIndex);
   const activeItem = data[coverIndex];
@@ -40,7 +39,7 @@ function FastCarousel() {
   const handleChangeIndex = (index: number) => {
     const maxIndex = data.length - 1;
     const boundedTargetIndex = Math.max(0, Math.min(maxIndex, index));
-    changeIndex(boundedTargetIndex);
+    useFastCarousel.getState().changeIndex(boundedTargetIndex);
   };
 
   useEventListener("keydown", (event) => {
