@@ -63,6 +63,13 @@ function Index() {
         onClick={() => navigate({ to: "/project/fast-carousel" })}
       />
       <SectionCard
+        // img={{ src: ImgFastCarousel, alt: "fast-carousel" }}
+        title="Trello API"
+        description="Workspace for testing the Trello API and building Trello-related projects."
+        tags={["trello", "api", "workspace"]}
+        onClick={() => navigate({ to: "/project/trello-api" })}
+      />
+      <SectionCard
         renderOverlay={() => (
           <div className="absolute inset-x-0 inset-y-0 group">
             {/* Backdrop */}

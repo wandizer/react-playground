@@ -25,3 +25,6 @@ dist-ssr
 
 *storybook.log
 public/videos/*
+
+.env.local
+.env.*.local

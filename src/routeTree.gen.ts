@@ -21,6 +21,7 @@ const IndexLazyImport = createFileRoute('/')()
 const ProjectVideoImmersionLazyImport = createFileRoute(
   '/project/video-immersion',
 )()
+const ProjectTrelloApiLazyImport = createFileRoute('/project/trello-api')()
 const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
   '/project/horizontal-virtual-slide',
 )()
@@ -51,6 +52,13 @@ const ProjectVideoImmersionLazyRoute = ProjectVideoImmersionLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
   import('./routes/project/video-immersion.lazy').then((d) => d.Route),
+)
+
+const ProjectTrelloApiLazyRoute = ProjectTrelloApiLazyImport.update({
+  path: '/project/trello-api',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/project/trello-api.lazy').then((d) => d.Route),
 )
 
 const ProjectHorizontalVirtualSlideLazyRoute =
@@ -131,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProjectHorizontalVirtualSlideLazyImport
       parentRoute: typeof rootRoute
     }
+    '/project/trello-api': {
+      id: '/project/trello-api'
+      path: '/project/trello-api'
+      fullPath: '/project/trello-api'
+      preLoaderRoute: typeof ProjectTrelloApiLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/project/video-immersion': {
       id: '/project/video-immersion'
       path: '/project/video-immersion'
@@ -150,6 +165,7 @@ export const routeTree = rootRoute.addChildren({
   ProjectDynamicModalLazyRoute,
   ProjectFastCarouselLazyRoute,
   ProjectHorizontalVirtualSlideLazyRoute,
+  ProjectTrelloApiLazyRoute,
   ProjectVideoImmersionLazyRoute,
 })
 
@@ -167,6 +183,7 @@ export const routeTree = rootRoute.addChildren({
         "/project/dynamic-modal",
         "/project/fast-carousel",
         "/project/horizontal-virtual-slide",
+        "/project/trello-api",
         "/project/video-immersion"
       ]
     },
@@ -187,6 +204,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/project/horizontal-virtual-slide": {
       "filePath": "project/horizontal-virtual-slide.lazy.tsx"
+    },
+    "/project/trello-api": {
+      "filePath": "project/trello-api.lazy.tsx"
     },
     "/project/video-immersion": {
       "filePath": "project/video-immersion.lazy.tsx"
