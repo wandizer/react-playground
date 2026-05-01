@@ -1,5 +1,5 @@
-import classNames from "classnames";
-import { useId } from "react";
+import classNames from 'classnames'
+import { useId, type JSX } from 'react'
 
 const defaultRenderOverlay = () => (
   <div className="absolute inset-x-0 inset-y-0">
@@ -12,29 +12,29 @@ const defaultRenderOverlay = () => (
       </h1>
     </div>
   </div>
-);
+)
 
 export type SectionCardProps = {
   /** Title to be shown */
-  title?: string;
+  title?: string
   /** Description to be shown */
-  description?: string;
+  description?: string
   /** Cover image */
   img?: {
-    src: string;
-    alt: string;
-  };
+    src: string
+    alt: string
+  }
   /** List of Tags to be shown */
-  tags?: string[];
+  tags?: string[]
   /** Additional class name */
-  className?: string;
+  className?: string
   /** Render overlay */
-  renderOverlay?: boolean | (() => JSX.Element);
+  renderOverlay?: boolean | (() => JSX.Element)
   /** OnClick function */
-  onClick?: React.DOMAttributes<HTMLDivElement>["onClick"];
+  onClick?: React.DOMAttributes<HTMLDivElement>['onClick']
   /** Id */
-  id?: string;
-};
+  id?: string
+}
 
 /**
  * SectionCard component is a card component that displays a title, description, image, and tags.
@@ -60,30 +60,30 @@ export function SectionCard({
   renderOverlay = false,
   onClick,
 }: SectionCardProps): JSX.Element {
-  const generatedId = useId();
-  const idToUse = id || generatedId;
+  const generatedId = useId()
+  const idToUse = id || generatedId
   return (
     <div
       id={idToUse}
       className={classNames(
-        "bg-white max-w-sm h-[27.5rem] w-[24rem] rounded overflow-hidden shadow-lg relative flex flex-col group",
-        "hover:shadow-2xl hover:scale-105 hover:-rotate-1 transition-transform duration-250",
-        "cursor-pointer",
+        'bg-gray-200/80 max-w-sm h-110 w-[24rem] rounded-xl overflow-hidden shadow-lg relative flex flex-col group',
+        'hover:shadow-2xl hover:scale-95 even:hover:-rotate-1 odd:hover:rotate-1 transition-transform duration-500',
+        'cursor-pointer',
 
         className,
       )}
-      {...(onClick && { onClick, role: "button", tabIndex: 0 })}
+      {...(onClick && { onClick, role: 'button', tabIndex: 0 })}
     >
       {/* Overlay */}
-      {renderOverlay && typeof renderOverlay === "function" && renderOverlay()}
+      {renderOverlay && typeof renderOverlay === 'function' && renderOverlay()}
       {renderOverlay &&
-        typeof renderOverlay === "boolean" &&
+        typeof renderOverlay === 'boolean' &&
         defaultRenderOverlay()}
       {/* Cover */}
-      <div className="aspect-video flex-shrink-0 overflow-hidden">
+      <div className="aspect-video shrink-0 overflow-hidden">
         {img ? (
           <img
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             src={img.src}
             alt={img.alt}
           />
@@ -92,9 +92,11 @@ export function SectionCard({
         )}
       </div>
       {/* Title & Description */}
-      <div className="flex-grow px-6 py-2 min-h-0">
+      <div className="grow px-6 py-2 min-h-0">
         {title ? (
-          <div className="font-bold text-xl mb-2 line-clamp-2">{title}</div>
+          <div className="text-black font-bold text-xl mb-2 line-clamp-2">
+            {title}
+          </div>
         ) : (
           <div className="bg-gray-300 w-1/2 h-7 mb-2 rounded-sm" />
         )}
@@ -110,7 +112,7 @@ export function SectionCard({
         )}
       </div>
       {/* Tags */}
-      <div className="px-6 pb-2 flex-grow-0 align-bottom">
+      <div className="px-6 pb-2 grow-0 align-bottom">
         {tags.length
           ? tags.map((tag) => (
               <span
@@ -120,7 +122,7 @@ export function SectionCard({
                 #{tag}
               </span>
             ))
-          : ["tag 1", "long tag 2", "tag 3"].map((tag) => (
+          : ['tag 1', 'long tag 2', 'tag 3'].map((tag) => (
               <span
                 key={`tag-${idToUse}-${tag}`}
                 className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-200 mr-2 mb-2"
@@ -130,5 +132,5 @@ export function SectionCard({
             ))}
       </div>
     </div>
-  );
+  )
 }

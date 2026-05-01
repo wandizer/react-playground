@@ -7,10 +7,10 @@ import {
   DialogPanel,
   DialogTitle,
 } from "@headlessui/react";
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
-export const Route = createLazyFileRoute("/features/dynamic-modal")({
+export const Route = createFileRoute("/features/dynamic-modal")({
   component: DynamicModal,
 });
 

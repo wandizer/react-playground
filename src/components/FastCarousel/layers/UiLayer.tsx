@@ -1,13 +1,14 @@
-import classNames from "classnames";
-import { TRANSITION_DURATION } from "../store/useFastCarousel";
+import classNames from 'classnames'
+import type { JSX } from 'react'
+import { TRANSITION_DURATION } from '../store/useFastCarousel'
 
 type UiLayerProps = {
-  title: string;
-  description: string;
-  buttonText: string;
-};
+  title: string
+  description: string
+  buttonText: string
+}
 
-const style = { transitionDuration: `${TRANSITION_DURATION}ms` };
+const style = { transitionDuration: `${TRANSITION_DURATION}ms` }
 
 export function UiLayer({
   title,
@@ -17,8 +18,8 @@ export function UiLayer({
   return (
     <div
       className={classNames(
-        "w-full h-[calc(100vw/16*9*0.70)] z-20 flex flex-col items-start justify-end p-12 gap-4",
-        "transition-opacity ease-linear",
+        'w-full h-[calc(100vw/16*9*0.7)] z-20 flex flex-col items-start justify-end p-12 gap-4',
+        'transition-opacity ease-linear',
       )}
       style={style}
     >
@@ -28,5 +29,5 @@ export function UiLayer({
         {buttonText}
       </button>
     </div>
-  );
+  )
 }

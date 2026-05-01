@@ -1,13 +1,13 @@
-import { MouseEvent, useState } from "react";
-import ModalVideo from "./ModalVideo";
-import VideoEmbedded from "./VideoEmbedded";
+import { useState, type JSX, type MouseEvent } from 'react'
+import ModalVideo from './ModalVideo'
+import VideoEmbedded from './VideoEmbedded'
 
 type VideoCardProps = {
-  id: string;
-  videoId: string;
-  isActive?: boolean;
-  onClickActivate?: (event: MouseEvent) => void;
-};
+  id: string
+  videoId: string
+  isActive?: boolean
+  onClickActivate?: (event: MouseEvent) => void
+}
 
 export function VideoCard({
   id,
@@ -15,11 +15,11 @@ export function VideoCard({
   isActive = true,
   onClickActivate,
 }: VideoCardProps): JSX.Element {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+    setIsModalOpen(false)
+  }
 
   return (
     <div
@@ -30,12 +30,12 @@ export function VideoCard({
         <>
           {/* Corner button with gradient to open modal */}
           <div
-            className="absolute top-2 right-2 z-10 px-2 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded cursor-pointer text-sm opacity-90 hover:opacity-100 transition-opacity"
+            className="absolute top-2 right-2 z-10 px-2 py-1 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded cursor-pointer text-sm opacity-90 hover:opacity-100 transition-opacity"
             onClick={() => setIsModalOpen(true)}
           >
             Open in Modal
           </div>
-          <div className="absolute top-0 right-0 w-64 h-28 bg-gradient-to-bl from-black to-50% to-transparent pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-28 bg-linear-to-bl from-black to-50% to-transparent pointer-events-none" />
 
           {isModalOpen && (
             <div className="absolute inset-0 z-20 bg-black bg-opacity-50" />
@@ -55,5 +55,5 @@ export function VideoCard({
         <ModalVideo onClose={handleCloseModal} videoId={videoId} />
       )}
     </div>
-  );
+  )
 }

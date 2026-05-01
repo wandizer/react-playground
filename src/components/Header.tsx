@@ -1,18 +1,13 @@
-import type { JSX } from 'react'
-import { Container } from '../Ui/Container.tsx'
-import { Brand } from './Brand.tsx'
-import { NavLinks } from './NavLinks.tsx'
+import { Brand } from './Header/Brand.tsx'
+import { NavLinks } from './Header/NavLinks.tsx'
+import { Container } from './Ui/Container.tsx'
 
-export type HeaderProps = {
-  children?: React.ReactNode
-}
-
-export function Header(): JSX.Element {
+export default function Header() {
   return (
     <header>
       <nav
         id="nav"
-        className="absolute group z-10 w-full border-b border-black/5 dark:border-white/5 lg:border-transparent"
+        className="sticky group z-10 w-full border-b border-black/5 dark:border-white/5 lg:border-transparent"
       >
         <Container>
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 md:gap-0 md:py-4">

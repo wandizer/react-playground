@@ -1,8 +1,8 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { VideoCard } from "../../components/VideoImmersion/VideoCard";
 
-export const Route = createLazyFileRoute("/features/video-immersion")({
+export const Route = createFileRoute("/features/video-immersion")({
   component: VideoImmersion,
 });
 

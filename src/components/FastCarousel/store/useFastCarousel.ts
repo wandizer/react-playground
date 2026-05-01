@@ -1,61 +1,61 @@
-import { create } from "zustand";
-import { devtools } from "zustand/middleware";
-import { TimeoutRef } from "./types";
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
 
-export const TRANSITION_DURATION = 500;
-export const DEBOUNCE_DURATION = 500;
+export const TRANSITION_DURATION = 500
+export const DEBOUNCE_DURATION = 500
 
 type FastCarouselState = {
-  itemCount: number;
-  coverIndex: number;
-  scrollerIndex: number;
-  isCoverReady: boolean;
-  isVideoReady: boolean;
-  isTransitioning: boolean;
-};
+  itemCount: number
+  coverIndex: number
+  scrollerIndex: number
+  isCoverReady: boolean
+  isVideoReady: boolean
+  isTransitioning: boolean
+}
 
 type FastCarouselActions = {
-  changeIndex: (index: number) => void;
-  setIsCoverReady: (isReady: boolean) => void;
-};
+  changeIndex: (index: number) => void
+  setIsCoverReady: (isReady: boolean) => void
+}
 
-type FastCarouselStore = FastCarouselState & FastCarouselActions;
+type FastCarouselStore = FastCarouselState & FastCarouselActions
 
+export type TimeoutRef = ReturnType<typeof requestAnimationFrame> | undefined
 export const clearTimeoutRef = (timeoutRef: { current: TimeoutRef }) => {
   if (!timeoutRef.current) {
-    return;
+    return
   }
-  clearTimeout(timeoutRef.current);
-  cancelAnimationFrame(timeoutRef.current);
-  timeoutRef.current = undefined;
-};
+  clearTimeout(timeoutRef.current)
+  cancelAnimationFrame(timeoutRef.current)
+  timeoutRef.current = undefined
+}
 
 const isServer =
-  typeof window === "undefined" ||
-  typeof window.document === "undefined" ||
-  typeof window.document.createElement === "undefined";
+  typeof window === 'undefined' ||
+  typeof window.document === 'undefined' ||
+  typeof window.document.createElement === 'undefined'
 
-const timeOutSetCoverIndexRef: { current: TimeoutRef } = { current: undefined };
-const timeOutSetIsVideoReady: { current: TimeoutRef } = { current: undefined };
+const timeOutSetCoverIndexRef: { current: TimeoutRef } = { current: undefined }
+const timeOutSetIsVideoReady: { current: TimeoutRef } = { current: undefined }
 
-type OnAnimationComplete = () => void;
+type OnAnimationComplete = () => void
 
 const createAnimateFrame = (onComplete: OnAnimationComplete) => {
-  let startTime: number | null = null;
+  let startTime: number | null = null
 
   const animate = (timestamp: number) => {
-    if (!startTime) startTime = timestamp;
-    const elapsed = timestamp - startTime;
+    if (!startTime) startTime = timestamp
+    const elapsed = timestamp - startTime
 
     if (elapsed >= DEBOUNCE_DURATION) {
-      onComplete();
+      onComplete()
     } else {
-      timeOutSetCoverIndexRef.current = requestAnimationFrame(animate);
+      timeOutSetCoverIndexRef.current = requestAnimationFrame(animate)
     }
-  };
+  }
 
-  return animate;
-};
+  return animate
+}
 
 export const useFastCarousel = create<FastCarouselStore>()(
   devtools(
@@ -71,19 +71,19 @@ export const useFastCarousel = create<FastCarouselStore>()(
         changeIndex: (index: number) => {
           if (isServer) {
             console.warn(
-              "Attempted to change index on server. This action is client-only.",
-            );
-            return;
+              'Attempted to change index on server. This action is client-only.',
+            )
+            return
           }
 
           // Do nothing if index is the same as current
           if (index === get().scrollerIndex && index === get().coverIndex) {
-            return;
+            return
           }
 
           // Clear any pending transition timeouts
-          clearTimeoutRef(timeOutSetCoverIndexRef);
-          clearTimeoutRef(timeOutSetIsVideoReady);
+          clearTimeoutRef(timeOutSetCoverIndexRef)
+          clearTimeoutRef(timeOutSetIsVideoReady)
 
           // Start transition: set scrollerIndex immediately, then after transition duration, update coverIndex
           set({
@@ -91,47 +91,47 @@ export const useFastCarousel = create<FastCarouselStore>()(
             isTransitioning: true,
             isCoverReady: false,
             isVideoReady: false,
-          });
+          })
 
           timeOutSetCoverIndexRef.current = requestAnimationFrame(
             createAnimateFrame(() =>
               set(
                 { coverIndex: index, isTransitioning: false },
                 false,
-                "changeIndex/coverIndexChanged",
+                'changeIndex/coverIndexChanged',
               ),
             ),
-          );
+          )
 
           // TimeOut for
         },
 
         setIsCoverReady: (isReady: boolean) => {
-          set({ isCoverReady: isReady });
+          set({ isCoverReady: isReady })
 
-          if (!isReady) return;
+          if (!isReady) return
           timeOutSetIsVideoReady.current = requestAnimationFrame(
             createAnimateFrame(() =>
               set(
                 { isVideoReady: true },
                 false,
-                "setIsCoverReady/isVideoReady",
+                'setIsCoverReady/isVideoReady',
               ),
             ),
-          );
+          )
         },
-      };
+      }
     },
     {
-      name: "FastCarouselStore",
+      name: 'FastCarouselStore',
       serialize: {
         options: {
-          name: "FastCarouselStore",
+          name: 'FastCarouselStore',
           // Avoid serializing functions and complex objects in devtools
           skip: (_key: unknown, value: unknown) =>
-            typeof value === "function" || typeof value === "object",
+            typeof value === 'function' || typeof value === 'object',
         },
       },
     },
   ),
-);
+)

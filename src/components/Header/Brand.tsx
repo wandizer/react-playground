@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link } from '@tanstack/react-router'
 
 export function Brand() {
   return (
@@ -8,7 +8,7 @@ export function Brand() {
         <div className="h-5 w-2 bg-primary rounded rotate-45 "></div>
         <div className="h-5 w-2 bg-primary rounded -rotate-45 -translate-x-2 translate-y-2 "></div>
         {/* Slash */}
-        <div className="h-[25px] w-2 rotate-[25deg] mx-2 mt-0.5 bg-white rounded"></div>
+        <div className="h-6.25 w-2 rotate-25 mx-2 mt-0.5 bg-white rounded"></div>
         {/* Chevron right shape */}
         <div className="h-5 w-2 bg-primary rounded -rotate-45"></div>
         <div className="h-5 w-2 bg-primary rounded rotate-45 -translate-x-2 translate-y-2"></div>
@@ -17,5 +17,5 @@ export function Brand() {
         React-Playground
       </span>
     </Link>
-  );
+  )
 }

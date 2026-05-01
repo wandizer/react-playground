@@ -1,17 +1,17 @@
-import classNames from "classnames";
-import { forwardRef, memo } from "react";
+import classNames from 'classnames'
+import { forwardRef, memo } from 'react'
 
 export const HorizontalList = forwardRef<
   HTMLDivElement,
   {
-    activeIndex: number;
-    items: { id: string; src: string }[];
+    activeIndex: number
+    items: { id: string; src: string }[]
   }
 >(({ activeIndex, items }, ref) => {
   return (
     <div
       ref={ref}
-      className="w-screen h-[calc(100vw/16*9*0.20)] overflow-x-auto z-20 px-12 py-1 no-scrollbar"
+      className="w-screen h-[calc(100vw/16*9*0.2)] overflow-x-auto z-20 px-12 py-1 no-scrollbar"
     >
       <ul className="flex flex-row flex-nowrap h-full w-fit gap-12">
         {items.map((item, index) => (
@@ -24,23 +24,23 @@ export const HorizontalList = forwardRef<
         ))}
       </ul>
     </div>
-  );
-});
+  )
+})
 
 export const HorizontalListItem = memo(function HorizontalListItem({
   index,
   isActive,
   src,
 }: {
-  index: number;
-  isActive: boolean;
-  src: string;
+  index: number
+  isActive: boolean
+  src: string
 }) {
   return (
     <li
       key={index}
-      className={classNames("h-full aspect-video cursor-pointer rounded-md", {
-        "ring-4 ring-white": isActive,
+      className={classNames('h-full aspect-video cursor-pointer rounded-md', {
+        'ring-4 ring-white': isActive,
       })}
     >
       <img
@@ -49,7 +49,7 @@ export const HorizontalListItem = memo(function HorizontalListItem({
         className="w-full h-full object-cover rounded-md"
       />
     </li>
-  );
-});
+  )
+})
 
-HorizontalListItem.displayName = "HorizontalListItem";
+HorizontalListItem.displayName = 'HorizontalListItem'

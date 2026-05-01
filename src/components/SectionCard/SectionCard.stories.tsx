@@ -1,35 +1,34 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from '@storybook/react'
 
-import { SectionCard } from "./SectionCard";
-import { LabeledComponent } from "../../storybook/helpers";
+import { SectionCard } from './SectionCard.tsx'
 
 const IMAGE_OPTIONS = {
-  "-": undefined,
+  '-': undefined,
   Cover: {
-    src: "https://fakeimg.pl/1024x480/000,200/fff,255/?text=Cover",
-    alt: "Cover",
+    src: 'https://fakeimg.pl/1024x480/000,200/fff,255/?text=Cover',
+    alt: 'Cover',
   },
-};
+}
 
 const meta = {
-  title: "Components/SectionCard",
+  title: 'Components/SectionCard',
   component: SectionCard,
   argTypes: {
     img: {
       options: Object.keys(IMAGE_OPTIONS),
-      control: { type: "select" },
+      control: { type: 'select' },
       mapping: IMAGE_OPTIONS,
     },
   },
-} satisfies Meta<typeof SectionCard>;
+} satisfies Meta<typeof SectionCard>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Example: Story = {
   args: {
     title:
-      "Lorem Ipsum Dolor Sit Amet Consectetur Adipiscing Elit Sed Do Eiusmod",
+      'Lorem Ipsum Dolor Sit Amet Consectetur Adipiscing Elit Sed Do Eiusmod',
     description: `
       Lorem ipsum dolor sit amet, consectetur adip iscing elit. Sed do eiusmod tempor
       incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
@@ -37,19 +36,19 @@ export const Example: Story = {
       dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
     `,
     img: {
-      src: "https://fakeimg.pl/1024x480/000,200/fff,255/?text=Cover",
-      alt: "Cover",
+      src: 'https://fakeimg.pl/1024x480/000,200/fff,255/?text=Cover',
+      alt: 'Cover',
     },
     tags: Array.from(
       { length: 2 },
-      (_, i) => `${i % 2 === 0 ? "Long tag" : "Tag"} ${i + 1}`,
+      (_, i) => `${i % 2 === 0 ? 'Long tag' : 'Tag'} ${i + 1}`,
     ),
   },
-};
+}
 
 export const Empty: Story = {
   args: {},
-};
+}
 
 export const WithDefaultOverlay: Story = {
   decorators: [
@@ -61,7 +60,7 @@ export const WithDefaultOverlay: Story = {
   ],
   parameters: {
     pseudo: {
-      hover: "#hover",
+      hover: '#hover',
     },
   },
   args: {
@@ -69,15 +68,11 @@ export const WithDefaultOverlay: Story = {
   },
   render: (args) => (
     <>
-      <LabeledComponent label="Default">
-        <SectionCard {...args} />
-      </LabeledComponent>
-      <LabeledComponent label="Hovered">
-        <SectionCard {...args} id="hover" />
-      </LabeledComponent>
+      <SectionCard {...args} />
+      <SectionCard {...args} id="hover" />
     </>
   ),
-};
+}
 
 export const WithCustomOverlay: Story = {
   args: {
@@ -87,4 +82,4 @@ export const WithCustomOverlay: Story = {
       </div>
     ),
   },
-};
+}

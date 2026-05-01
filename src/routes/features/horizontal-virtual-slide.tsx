@@ -1,13 +1,13 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
-import { useVirtualizer, Virtualizer } from "@tanstack/react-virtual";
-import classNames from "classnames";
-import debounce from "lodash/debounce";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useWindowSize } from "usehooks-ts";
+import { createFileRoute } from '@tanstack/react-router'
+import { useVirtualizer, Virtualizer } from '@tanstack/react-virtual'
+import classNames from 'classnames'
+import debounce from 'lodash/debounce'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useWindowSize } from 'usehooks-ts'
 
-export const Route = createLazyFileRoute("/features/horizontal-virtual-slide")({
+export const Route = createFileRoute('/features/horizontal-virtual-slide')({
   component: HorizontalVirtualSlide,
-});
+})
 
 /**
  * Helper function that shrinks width to maintain aspect ratio. Useful for responsive design.
@@ -16,33 +16,33 @@ export const Route = createLazyFileRoute("/features/horizontal-virtual-slide")({
  * @returns The available width of the element, within the aspect ratio and container's height.
  */
 const getMinRatioWidth = (
-  aspectRatio: string = "16:9",
+  aspectRatio: string = '16:9',
   container?: { innerHeight: number; innerWidth: number },
 ) => {
-  const { innerHeight, innerWidth } = container || window;
-  const [aspectWidth, aspectHeight] = aspectRatio.split(":").map(Number);
-  const ratio = aspectWidth / aspectHeight;
-  const maxWidth = innerHeight * ratio;
-  return Math.min(maxWidth, innerWidth);
-};
+  const { innerHeight, innerWidth } = container || window
+  const [aspectWidth, aspectHeight] = aspectRatio.split(':').map(Number)
+  const ratio = aspectWidth / aspectHeight
+  const maxWidth = innerHeight * ratio
+  return Math.min(maxWidth, innerWidth)
+}
 
 function HorizontalVirtualSlide() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const parentRef = useRef<HTMLDivElement>(null);
-  const length = 50; // Number of columns
-  const minPadding = 100; // Minimum padding in px
-  const bottomPadding = 112; // Bottom padding in px (also used for info height)
-  const isFirst = currentIndex === 0;
-  const isLast = currentIndex === length - 1;
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const parentRef = useRef<HTMLDivElement>(null)
+  const length = 50 // Number of columns
+  const minPadding = 100 // Minimum padding in px
+  const bottomPadding = 112 // Bottom padding in px (also used for info height)
+  const isFirst = currentIndex === 0
+  const isLast = currentIndex === length - 1
 
   const { width: windowWidth, height: windowHeight } = useWindowSize({
     debounceDelay: 250,
-  });
-  const isSmallScreen = windowWidth < 768;
+  })
+  const isSmallScreen = windowWidth < 768
 
   const estimatedSize = !isSmallScreen
     ? getMinRatioWidth(
-        "16:9",
+        '16:9',
         parentRef.current
           ? {
               innerHeight: parentRef.current.clientHeight - bottomPadding,
@@ -50,30 +50,31 @@ function HorizontalVirtualSlide() {
             }
           : undefined,
       )
-    : (windowWidth * 9) / 16 + bottomPadding;
+    : (windowWidth * 9) / 16 + bottomPadding
 
   const padding = useMemo(
     () => ((!isSmallScreen ? windowWidth : windowHeight) - estimatedSize) / 2,
     [estimatedSize, isSmallScreen, windowHeight, windowWidth],
-  );
+  )
 
   // Debounced function to update current index
   const debouncedUpdateCurrentIndex = useMemo(() => {
     return debounce((instance: Virtualizer<HTMLDivElement, Element>) => {
-      const { scrollOffset, measurementsCache } = instance;
-      const [cachedFirstItem] = measurementsCache;
-      const cachedItemSize = cachedFirstItem?.size;
-      const estimatedIndex = Math.round(scrollOffset / cachedItemSize);
+      const { scrollOffset, measurementsCache } = instance
+      if (!scrollOffset) return
+      const [cachedFirstItem] = measurementsCache
+      const cachedItemSize = cachedFirstItem?.size
+      const estimatedIndex = Math.round(scrollOffset / cachedItemSize)
       setCurrentIndex((prevIndex) =>
         estimatedIndex !== prevIndex ? estimatedIndex : prevIndex,
-      );
-    }, 250);
-  }, []);
+      )
+    }, 250)
+  }, [])
 
   // Unmount cleanup of debounced function
   useEffect(() => {
-    return debouncedUpdateCurrentIndex.cancel();
-  }, [debouncedUpdateCurrentIndex]);
+    return debouncedUpdateCurrentIndex.cancel()
+  }, [debouncedUpdateCurrentIndex])
 
   const virtualizer = useVirtualizer({
     horizontal: !isSmallScreen,
@@ -86,44 +87,44 @@ function HorizontalVirtualSlide() {
     scrollPaddingStart: padding,
     scrollPaddingEnd: padding,
     onChange: debouncedUpdateCurrentIndex,
-  });
+  })
 
   useEffect(() => {
-    const recalculateColumnWidths = () => virtualizer.measure();
-    const debouncedResizeHandler = debounce(recalculateColumnWidths, 250);
-    window.addEventListener("resize", debouncedResizeHandler);
-    return () => window.removeEventListener("resize", debouncedResizeHandler);
-  }, [virtualizer]);
+    const recalculateColumnWidths = () => virtualizer.measure()
+    const debouncedResizeHandler = debounce(recalculateColumnWidths, 250)
+    window.addEventListener('resize', debouncedResizeHandler)
+    return () => window.removeEventListener('resize', debouncedResizeHandler)
+  }, [virtualizer])
 
   const handleSmoothScroll = useCallback(
     (index: number) => {
-      virtualizer.scrollToIndex(index, { behavior: "auto" });
+      virtualizer.scrollToIndex(index, { behavior: 'auto' })
     },
     [virtualizer],
-  );
+  )
 
   const handlePrev = useCallback(() => {
     if (currentIndex > 0) {
-      handleSmoothScroll(currentIndex - 1);
+      handleSmoothScroll(currentIndex - 1)
     }
-  }, [currentIndex, handleSmoothScroll]);
+  }, [currentIndex, handleSmoothScroll])
 
   const handleNext = useCallback(() => {
     if (currentIndex < length - 1) {
-      handleSmoothScroll(currentIndex + 1);
+      handleSmoothScroll(currentIndex + 1)
     }
-  }, [currentIndex, handleSmoothScroll]);
+  }, [currentIndex, handleSmoothScroll])
 
   return (
-    <main className={classNames({ "pt-16": !isSmallScreen })}>
+    <main className={classNames({ 'pt-16': !isSmallScreen })}>
       <h1 className="text-3xl font-bold text-center py-2">
         Horizontal Virtual Slide
       </h1>
       <div
         className={classNames(
-          "absolute top-0 bottom-0 flex flex-col justify-center z-0",
+          'absolute top-0 bottom-0 flex flex-col justify-center z-0',
           {
-            "mt-32 mb-8": !isSmallScreen,
+            'mt-32 mb-8': !isSmallScreen,
           },
         )}
       >
@@ -142,16 +143,16 @@ function HorizontalVirtualSlide() {
           ref={parentRef}
           id="scrollableElement"
           className={classNames(
-            "snap-mandatory overflow-x-auto no-scrollbar w-screen h-full",
+            'snap-mandatory overflow-x-auto no-scrollbar w-screen h-full',
             {
-              "snap-y overflow-y-auto": isSmallScreen,
-              "snap-x overflow-x-auto": !isSmallScreen,
+              'snap-y overflow-y-auto': isSmallScreen,
+              'snap-x overflow-x-auto': !isSmallScreen,
             },
           )}
         >
           <div
-            className={classNames("relative", {
-              "top-1/2 transform -translate-y-1/2": !isSmallScreen,
+            className={classNames('relative', {
+              'top-1/2 transform -translate-y-1/2': !isSmallScreen,
             })}
             style={
               !isSmallScreen
@@ -166,13 +167,13 @@ function HorizontalVirtualSlide() {
             }
           >
             {virtualizer.getVirtualItems().map((virtualItem) => {
-              const isCurrent = virtualItem.index === currentIndex;
+              const isCurrent = virtualItem.index === currentIndex
 
               return (
                 <div
                   key={virtualItem.index}
                   className={classNames(
-                    "absolute top-0 left-0 snap-center aspect-video text-white",
+                    'absolute top-0 left-0 snap-center aspect-video text-white',
                   )}
                   style={
                     !isSmallScreen
@@ -185,14 +186,14 @@ function HorizontalVirtualSlide() {
                           transform: `translateY(${virtualItem.start}px)`,
                         }
                   }
-                  {...(!isCurrent && { "aria-hidden": true, inert: "true" })}
+                  {...(!isCurrent && { 'aria-hidden': true })}
                 >
                   <div
                     className={classNames(
-                      "w-full h-full transition-all duration-300 ease-in-out",
+                      'w-full h-full transition-all duration-300 ease-in-out',
                       {
-                        "scale-90 transform": !isCurrent && !isSmallScreen,
-                        "opacity-70": !isCurrent && isSmallScreen,
+                        'scale-90 transform': !isCurrent && !isSmallScreen,
+                        'opacity-70': !isCurrent && isSmallScreen,
                       },
                     )}
                   >
@@ -200,7 +201,7 @@ function HorizontalVirtualSlide() {
                     <div
                       tabIndex={0}
                       className={classNames(
-                        "w-full h-full bg-white flex items-center justify-center text-black text-2xl font-bold",
+                        'w-full h-full bg-white flex items-center justify-center text-black text-2xl font-bold',
                       )}
                     >
                       Item {virtualItem.index}
@@ -238,7 +239,7 @@ function HorizontalVirtualSlide() {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
@@ -254,5 +255,5 @@ function HorizontalVirtualSlide() {
         )}
       </div>
     </main>
-  );
+  )
 }

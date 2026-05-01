@@ -1,52 +1,52 @@
-import classNames from "classnames";
-import { Suspense, useState } from "react";
+import classNames from 'classnames'
+import { Suspense, useState, type JSX } from 'react'
 import {
   createNewCard,
   createNewTicketCard,
   getBoard,
   getCardsOnList,
   getListsOnBoard,
-} from "./api-helper";
-import { Board, BoardLists } from "./constants";
+} from './api-helper'
+import { Board, BoardLists } from './constants'
 
 const colorizeJSON = (json: string) => {
   return json
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
     .replace(
       /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
       (match) => {
-        let cls = "number";
+        let cls = 'number'
         if (/^"/.test(match)) {
-          const isKey = /:$/.test(match);
+          const isKey = /:$/.test(match)
           // Remove quotes and colon for keys to differentiate from string values
-          match = isKey ? match.slice(1, -2) + ":" : match;
-          cls = isKey ? "key" : "string";
+          match = isKey ? match.slice(1, -2) + ':' : match
+          cls = isKey ? 'key' : 'string'
         } else if (/true|false/.test(match)) {
-          cls = "boolean";
+          cls = 'boolean'
         } else if (/null/.test(match)) {
-          cls = "null";
+          cls = 'null'
         }
         return `<span class="${classNames({
-          "text-green-400": cls === "string",
-          "text-blue-400": cls === "number",
-          "text-yellow-400": cls === "boolean",
-          "text-gray-400": cls === "null",
-          "text-purple-400": cls === "key",
-        })}">${match}</span>`;
+          'text-green-400': cls === 'string',
+          'text-blue-400': cls === 'number',
+          'text-yellow-400': cls === 'boolean',
+          'text-gray-400': cls === 'null',
+          'text-purple-400': cls === 'key',
+        })}">${match}</span>`
       },
-    );
-};
+    )
+}
 
 function ButtonAPI({
   onClick,
   label,
   loading,
 }: {
-  onClick: () => void;
-  label: string;
-  loading?: boolean;
+  onClick: () => void
+  label: string
+  loading?: boolean
 }) {
   return (
     <button
@@ -54,32 +54,32 @@ function ButtonAPI({
       disabled={loading}
       className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded disabled:bg-gray-500 disabled:cursor-not-allowed"
     >
-      {loading ? "Loading..." : label}
+      {loading ? 'Loading...' : label}
     </button>
-  );
+  )
 }
 
 function TrelloAPI(): JSX.Element {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [response, setResponse] = useState<object | null>(null);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [response, setResponse] = useState<object | null>(null)
 
   const handleClick = async (fetchFunction: unknown) => {
-    if (typeof fetchFunction !== "function") {
-      setError("Invalid fetch function");
-      return;
+    if (typeof fetchFunction !== 'function') {
+      setError('Invalid fetch function')
+      return
     }
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
     try {
-      const res = await fetchFunction();
-      setResponse(res);
+      const res = await fetchFunction()
+      setResponse(res)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err instanceof Error ? err.message : 'Unknown error')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div id="trello-api" className="text-white p-4">
@@ -131,8 +131,8 @@ function TrelloAPI(): JSX.Element {
               handleClick(() =>
                 createNewCard(
                   BoardLists.Doing.id,
-                  "Test Card",
-                  "This is a test card",
+                  'Test Card',
+                  'This is a test card',
                 ),
               )
             }
@@ -146,12 +146,12 @@ function TrelloAPI(): JSX.Element {
               handleClick(() =>
                 createNewTicketCard({
                   issueLink:
-                    "https://gitlab.com/wandizer/react-playground/-/issues/1234",
-                  title: "Test Ticket Card",
+                    'https://gitlab.com/wandizer/react-playground/-/issues/1234',
+                  title: 'Test Ticket Card',
                   listId: BoardLists.Doing.id,
-                  branchName: "example/branch-name",
+                  branchName: 'example/branch-name',
                   mergeRequestLink:
-                    "https://gitlab.com/wandizer/react-playground/-/merge_requests/5678",
+                    'https://gitlab.com/wandizer/react-playground/-/merge_requests/5678',
                 }),
               )
             }
@@ -170,7 +170,7 @@ function TrelloAPI(): JSX.Element {
         )}
       </Suspense>
     </div>
-  );
+  )
 }
 
-export default TrelloAPI;
+export default TrelloAPI
