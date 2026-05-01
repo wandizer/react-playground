@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect } from "react";
 import { drawDynamicCurvedArrow } from "../../helpers/cubic-bezier-arrows";
 
-export const Route = createLazyFileRoute("/project/cubic-bezier-arrows")({
+export const Route = createLazyFileRoute("/features/cubic-bezier-arrows")({
   component: CubicBezierArrows,
 });
 

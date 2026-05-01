@@ -19,21 +19,21 @@ import { Route as rootRoute } from './routes/__root'
 const FeaturesLazyImport = createFileRoute('/features')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
-const ProjectVideoImmersionLazyImport = createFileRoute(
-  '/project/video-immersion',
+const FeaturesVideoImmersionLazyImport = createFileRoute(
+  '/features/video-immersion',
 )()
-const ProjectTrelloApiLazyImport = createFileRoute('/project/trello-api')()
-const ProjectHorizontalVirtualSlideLazyImport = createFileRoute(
-  '/project/horizontal-virtual-slide',
+const FeaturesTrelloApiLazyImport = createFileRoute('/features/trello-api')()
+const FeaturesHorizontalVirtualSlideLazyImport = createFileRoute(
+  '/features/horizontal-virtual-slide',
 )()
-const ProjectFastCarouselLazyImport = createFileRoute(
-  '/project/fast-carousel',
+const FeaturesFastCarouselLazyImport = createFileRoute(
+  '/features/fast-carousel',
 )()
-const ProjectDynamicModalLazyImport = createFileRoute(
-  '/project/dynamic-modal',
+const FeaturesDynamicModalLazyImport = createFileRoute(
+  '/features/dynamic-modal',
 )()
-const ProjectCubicBezierArrowsLazyImport = createFileRoute(
-  '/project/cubic-bezier-arrows',
+const FeaturesCubicBezierArrowsLazyImport = createFileRoute(
+  '/features/cubic-bezier-arrows',
 )()
 
 // Create/Update Routes
@@ -53,50 +53,52 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const ProjectVideoImmersionLazyRoute = ProjectVideoImmersionLazyImport.update({
-  path: '/project/video-immersion',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/project/video-immersion.lazy').then((d) => d.Route),
+const FeaturesVideoImmersionLazyRoute = FeaturesVideoImmersionLazyImport.update(
+  {
+    path: '/video-immersion',
+    getParentRoute: () => FeaturesLazyRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/features/video-immersion.lazy').then((d) => d.Route),
 )
 
-const ProjectTrelloApiLazyRoute = ProjectTrelloApiLazyImport.update({
-  path: '/project/trello-api',
-  getParentRoute: () => rootRoute,
+const FeaturesTrelloApiLazyRoute = FeaturesTrelloApiLazyImport.update({
+  path: '/trello-api',
+  getParentRoute: () => FeaturesLazyRoute,
 } as any).lazy(() =>
-  import('./routes/project/trello-api.lazy').then((d) => d.Route),
+  import('./routes/features/trello-api.lazy').then((d) => d.Route),
 )
 
-const ProjectHorizontalVirtualSlideLazyRoute =
-  ProjectHorizontalVirtualSlideLazyImport.update({
-    path: '/project/horizontal-virtual-slide',
-    getParentRoute: () => rootRoute,
+const FeaturesHorizontalVirtualSlideLazyRoute =
+  FeaturesHorizontalVirtualSlideLazyImport.update({
+    path: '/horizontal-virtual-slide',
+    getParentRoute: () => FeaturesLazyRoute,
   } as any).lazy(() =>
-    import('./routes/project/horizontal-virtual-slide.lazy').then(
+    import('./routes/features/horizontal-virtual-slide.lazy').then(
       (d) => d.Route,
     ),
   )
 
-const ProjectFastCarouselLazyRoute = ProjectFastCarouselLazyImport.update({
-  path: '/project/fast-carousel',
-  getParentRoute: () => rootRoute,
+const FeaturesFastCarouselLazyRoute = FeaturesFastCarouselLazyImport.update({
+  path: '/fast-carousel',
+  getParentRoute: () => FeaturesLazyRoute,
 } as any).lazy(() =>
-  import('./routes/project/fast-carousel.lazy').then((d) => d.Route),
+  import('./routes/features/fast-carousel.lazy').then((d) => d.Route),
 )
 
-const ProjectDynamicModalLazyRoute = ProjectDynamicModalLazyImport.update({
-  path: '/project/dynamic-modal',
-  getParentRoute: () => rootRoute,
+const FeaturesDynamicModalLazyRoute = FeaturesDynamicModalLazyImport.update({
+  path: '/dynamic-modal',
+  getParentRoute: () => FeaturesLazyRoute,
 } as any).lazy(() =>
-  import('./routes/project/dynamic-modal.lazy').then((d) => d.Route),
+  import('./routes/features/dynamic-modal.lazy').then((d) => d.Route),
 )
 
-const ProjectCubicBezierArrowsLazyRoute =
-  ProjectCubicBezierArrowsLazyImport.update({
-    path: '/project/cubic-bezier-arrows',
-    getParentRoute: () => rootRoute,
+const FeaturesCubicBezierArrowsLazyRoute =
+  FeaturesCubicBezierArrowsLazyImport.update({
+    path: '/cubic-bezier-arrows',
+    getParentRoute: () => FeaturesLazyRoute,
   } as any).lazy(() =>
-    import('./routes/project/cubic-bezier-arrows.lazy').then((d) => d.Route),
+    import('./routes/features/cubic-bezier-arrows.lazy').then((d) => d.Route),
   )
 
 // Populate the FileRoutesByPath interface
@@ -124,47 +126,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeaturesLazyImport
       parentRoute: typeof rootRoute
     }
-    '/project/cubic-bezier-arrows': {
-      id: '/project/cubic-bezier-arrows'
-      path: '/project/cubic-bezier-arrows'
-      fullPath: '/project/cubic-bezier-arrows'
-      preLoaderRoute: typeof ProjectCubicBezierArrowsLazyImport
-      parentRoute: typeof rootRoute
+    '/features/cubic-bezier-arrows': {
+      id: '/features/cubic-bezier-arrows'
+      path: '/cubic-bezier-arrows'
+      fullPath: '/features/cubic-bezier-arrows'
+      preLoaderRoute: typeof FeaturesCubicBezierArrowsLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
-    '/project/dynamic-modal': {
-      id: '/project/dynamic-modal'
-      path: '/project/dynamic-modal'
-      fullPath: '/project/dynamic-modal'
-      preLoaderRoute: typeof ProjectDynamicModalLazyImport
-      parentRoute: typeof rootRoute
+    '/features/dynamic-modal': {
+      id: '/features/dynamic-modal'
+      path: '/dynamic-modal'
+      fullPath: '/features/dynamic-modal'
+      preLoaderRoute: typeof FeaturesDynamicModalLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
-    '/project/fast-carousel': {
-      id: '/project/fast-carousel'
-      path: '/project/fast-carousel'
-      fullPath: '/project/fast-carousel'
-      preLoaderRoute: typeof ProjectFastCarouselLazyImport
-      parentRoute: typeof rootRoute
+    '/features/fast-carousel': {
+      id: '/features/fast-carousel'
+      path: '/fast-carousel'
+      fullPath: '/features/fast-carousel'
+      preLoaderRoute: typeof FeaturesFastCarouselLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
-    '/project/horizontal-virtual-slide': {
-      id: '/project/horizontal-virtual-slide'
-      path: '/project/horizontal-virtual-slide'
-      fullPath: '/project/horizontal-virtual-slide'
-      preLoaderRoute: typeof ProjectHorizontalVirtualSlideLazyImport
-      parentRoute: typeof rootRoute
+    '/features/horizontal-virtual-slide': {
+      id: '/features/horizontal-virtual-slide'
+      path: '/horizontal-virtual-slide'
+      fullPath: '/features/horizontal-virtual-slide'
+      preLoaderRoute: typeof FeaturesHorizontalVirtualSlideLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
-    '/project/trello-api': {
-      id: '/project/trello-api'
-      path: '/project/trello-api'
-      fullPath: '/project/trello-api'
-      preLoaderRoute: typeof ProjectTrelloApiLazyImport
-      parentRoute: typeof rootRoute
+    '/features/trello-api': {
+      id: '/features/trello-api'
+      path: '/trello-api'
+      fullPath: '/features/trello-api'
+      preLoaderRoute: typeof FeaturesTrelloApiLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
-    '/project/video-immersion': {
-      id: '/project/video-immersion'
-      path: '/project/video-immersion'
-      fullPath: '/project/video-immersion'
-      preLoaderRoute: typeof ProjectVideoImmersionLazyImport
-      parentRoute: typeof rootRoute
+    '/features/video-immersion': {
+      id: '/features/video-immersion'
+      path: '/video-immersion'
+      fullPath: '/features/video-immersion'
+      preLoaderRoute: typeof FeaturesVideoImmersionLazyImport
+      parentRoute: typeof FeaturesLazyImport
     }
   }
 }
@@ -174,13 +176,14 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
-  FeaturesLazyRoute,
-  ProjectCubicBezierArrowsLazyRoute,
-  ProjectDynamicModalLazyRoute,
-  ProjectFastCarouselLazyRoute,
-  ProjectHorizontalVirtualSlideLazyRoute,
-  ProjectTrelloApiLazyRoute,
-  ProjectVideoImmersionLazyRoute,
+  FeaturesLazyRoute: FeaturesLazyRoute.addChildren({
+    FeaturesCubicBezierArrowsLazyRoute,
+    FeaturesDynamicModalLazyRoute,
+    FeaturesFastCarouselLazyRoute,
+    FeaturesHorizontalVirtualSlideLazyRoute,
+    FeaturesTrelloApiLazyRoute,
+    FeaturesVideoImmersionLazyRoute,
+  }),
 })
 
 /* prettier-ignore-end */
@@ -193,13 +196,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
-        "/features",
-        "/project/cubic-bezier-arrows",
-        "/project/dynamic-modal",
-        "/project/fast-carousel",
-        "/project/horizontal-virtual-slide",
-        "/project/trello-api",
-        "/project/video-immersion"
+        "/features"
       ]
     },
     "/": {
@@ -209,25 +206,39 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "about.lazy.tsx"
     },
     "/features": {
-      "filePath": "features.lazy.tsx"
+      "filePath": "features.lazy.tsx",
+      "children": [
+        "/features/cubic-bezier-arrows",
+        "/features/dynamic-modal",
+        "/features/fast-carousel",
+        "/features/horizontal-virtual-slide",
+        "/features/trello-api",
+        "/features/video-immersion"
+      ]
     },
-    "/project/cubic-bezier-arrows": {
-      "filePath": "project/cubic-bezier-arrows.lazy.tsx"
+    "/features/cubic-bezier-arrows": {
+      "filePath": "features/cubic-bezier-arrows.lazy.tsx",
+      "parent": "/features"
     },
-    "/project/dynamic-modal": {
-      "filePath": "project/dynamic-modal.lazy.tsx"
+    "/features/dynamic-modal": {
+      "filePath": "features/dynamic-modal.lazy.tsx",
+      "parent": "/features"
     },
-    "/project/fast-carousel": {
-      "filePath": "project/fast-carousel.lazy.tsx"
+    "/features/fast-carousel": {
+      "filePath": "features/fast-carousel.lazy.tsx",
+      "parent": "/features"
     },
-    "/project/horizontal-virtual-slide": {
-      "filePath": "project/horizontal-virtual-slide.lazy.tsx"
+    "/features/horizontal-virtual-slide": {
+      "filePath": "features/horizontal-virtual-slide.lazy.tsx",
+      "parent": "/features"
     },
-    "/project/trello-api": {
-      "filePath": "project/trello-api.lazy.tsx"
+    "/features/trello-api": {
+      "filePath": "features/trello-api.lazy.tsx",
+      "parent": "/features"
     },
-    "/project/video-immersion": {
-      "filePath": "project/video-immersion.lazy.tsx"
+    "/features/video-immersion": {
+      "filePath": "features/video-immersion.lazy.tsx",
+      "parent": "/features"
     }
   }
 }

@@ -5,7 +5,7 @@ import debounce from "lodash/debounce";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useWindowSize } from "usehooks-ts";
 
-export const Route = createLazyFileRoute("/project/horizontal-virtual-slide")({
+export const Route = createLazyFileRoute("/features/horizontal-virtual-slide")({
   component: HorizontalVirtualSlide,
 });
 

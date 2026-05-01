@@ -45,20 +45,20 @@ function Features() {
           title="Horizontal Virtual Slide"
           description="Example of a horizontal virtual slide using react-virtual from TanStack."
           tags={["react", "virtual", "horizontal"]}
-          onClick={() => navigate({ to: "/project/horizontal-virtual-slide" })}
+          onClick={() => navigate({ to: "/features/horizontal-virtual-slide" })}
         />
         <SectionCard
           img={{ src: ImgCubicBezierArrows, alt: "cubic-bezier-arrows" }}
           title="Cubic Bezier Arrows"
           description="Example of cubic bezier arrows using SVG."
           tags={["svg", "cubic-bezier", "arrows", "spatial-navigation"]}
-          onClick={() => navigate({ to: "/project/cubic-bezier-arrows" })}
+          onClick={() => navigate({ to: "/features/cubic-bezier-arrows" })}
         />
         <SectionCard
           title="Dynamic Modal"
           description="Example of a dynamic modal using headlessui/react."
           tags={["headlessui", "modal", "dynamic"]}
-          renderOverlay={() => LinkOverlay("/project/dynamic-modal")}
+          renderOverlay={() => LinkOverlay("/features/dynamic-modal")}
         />
         <SectionCard
           img={{ src: ImgVideoImmersion, alt: "video-immersion" }}
@@ -66,21 +66,21 @@ function Features() {
           description="Example video immersion inside the app, where the video can be moved freely
          between different containers while keeping the playback state intact."
           tags={["video", "portal", "immersion"]}
-          onClick={() => navigate({ to: "/project/video-immersion" })}
+          onClick={() => navigate({ to: "/features/video-immersion" })}
         />
         <SectionCard
           img={{ src: ImgFastCarousel, alt: "fast-carousel" }}
           title="Fast Carousel"
           description="Example of a fast carousel using a custom crossfade technique."
           tags={["carousel", "cross-fade", "animation", "performance"]}
-          onClick={() => navigate({ to: "/project/fast-carousel" })}
+          onClick={() => navigate({ to: "/features/fast-carousel" })}
         />
         <SectionCard
           // img={{ src: ImgFastCarousel, alt: "fast-carousel" }}
           title="Trello API"
           description="Workspace for testing the Trello API and building Trello-related projects."
           tags={["trello", "api", "workspace"]}
-          onClick={() => navigate({ to: "/project/trello-api" })}
+          onClick={() => navigate({ to: "/features/trello-api" })}
         />
         <SectionCard
           renderOverlay={() => (
