@@ -1,11 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Container } from '../components/Ui/Container.tsx'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({ component: Index })
 
-function App() {
+function Index() {
   return (
-    <main>
+    <div>
       {/* Hero */}
       <Container className="relative h-145">
         <div className="absolute scale-[1.4] inset-0 blur-2xl h-full bg-linear-to-br from-transparent from-30% via-primary/30 to-70% to-transparent" />
@@ -19,7 +19,7 @@ function App() {
             also improve my skills and share knowledge with the community.
           </p>
           <div className="relative px-4 mx-auto mt-10 max-w-3xl sm:px-6">
-            <form action="/" accept-charset="UTF-8" method="get">
+            <form action="/" acceptCharset="UTF-8" method="get">
               <input value="free" type="hidden" name="price" id="price" />
               <div className="relative mx-auto w-full max-w-xl h-14 rounded-full duration-200 group after:border after:border-gray-950/5 after:absolute after:inset-0 after:w-full after:h-full after:rounded-full bg-gray-100/60 lg:max-w-none hover:bg-white hover:text-black hover:after:border-cool-indigo-200 after:duration-200 focus-within:bg-white focus-within:after:border-cool-indigo-200 hover:ring-1 ring-cool-indigo-200 focus-within:ring-1 focus-within:ring-cool-indigo-200">
                 <input
@@ -54,6 +54,6 @@ function App() {
           </div>
         </div>
       </Container>
-    </main>
+    </div>
   )
 }

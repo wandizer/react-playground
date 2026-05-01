@@ -20,6 +20,7 @@ import { Route as FeaturesFastCarouselRouteImport } from './routes/features/fast
 import { Route as FeaturesDynamicModalRouteImport } from './routes/features/dynamic-modal'
 import { Route as FeaturesCubicBezierArrowsRouteImport } from './routes/features/cubic-bezier-arrows'
 import { Route as DemoStorybookRouteImport } from './routes/demo/storybook'
+import { Route as ApiTestRouteImport } from './routes/api/test'
 
 const FeaturesRoute = FeaturesRouteImport.update({
   id: '/features',
@@ -78,11 +79,17 @@ const DemoStorybookRoute = DemoStorybookRouteImport.update({
   path: '/demo/storybook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTestRoute = ApiTestRouteImport.update({
+  id: '/api/test',
+  path: '/api/test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRouteWithChildren
+  '/api/test': typeof ApiTestRoute
   '/demo/storybook': typeof DemoStorybookRoute
   '/features/cubic-bezier-arrows': typeof FeaturesCubicBezierArrowsRoute
   '/features/dynamic-modal': typeof FeaturesDynamicModalRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/api/test': typeof ApiTestRoute
   '/demo/storybook': typeof DemoStorybookRoute
   '/features/cubic-bezier-arrows': typeof FeaturesCubicBezierArrowsRoute
   '/features/dynamic-modal': typeof FeaturesDynamicModalRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/features': typeof FeaturesRouteWithChildren
+  '/api/test': typeof ApiTestRoute
   '/demo/storybook': typeof DemoStorybookRoute
   '/features/cubic-bezier-arrows': typeof FeaturesCubicBezierArrowsRoute
   '/features/dynamic-modal': typeof FeaturesDynamicModalRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/features'
+    | '/api/test'
     | '/demo/storybook'
     | '/features/cubic-bezier-arrows'
     | '/features/dynamic-modal'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/api/test'
     | '/demo/storybook'
     | '/features/cubic-bezier-arrows'
     | '/features/dynamic-modal'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/features'
+    | '/api/test'
     | '/demo/storybook'
     | '/features/cubic-bezier-arrows'
     | '/features/dynamic-modal'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   FeaturesRoute: typeof FeaturesRouteWithChildren
+  ApiTestRoute: typeof ApiTestRoute
   DemoStorybookRoute: typeof DemoStorybookRoute
 }
 
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStorybookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/test': {
+      id: '/api/test'
+      path: '/api/test'
+      fullPath: '/api/test'
+      preLoaderRoute: typeof ApiTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -276,6 +296,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   FeaturesRoute: FeaturesRouteWithChildren,
+  ApiTestRoute: ApiTestRoute,
   DemoStorybookRoute: DemoStorybookRoute,
 }
 export const routeTree = rootRouteImport

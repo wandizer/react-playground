@@ -46,7 +46,7 @@ body,
 
 body {
   margin: 0;
-  color: var(--sea-ink);
+  color: white;
   font-family: var(--font-sans);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
