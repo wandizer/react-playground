@@ -79,6 +79,10 @@ export const createNewCard = async (
   });
 };
 
+/**
+ * [POST] /cards
+ * Helper function to create a new Trello card with a specific format for ticketing purposes.
+ */
 export const createNewTicketCard = async ({
   listId = BoardLists.Doing.id,
   title,

@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const FeaturesLazyImport = createFileRoute('/features')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 const ProjectVideoImmersionLazyImport = createFileRoute(
@@ -36,6 +37,11 @@ const ProjectCubicBezierArrowsLazyImport = createFileRoute(
 )()
 
 // Create/Update Routes
+
+const FeaturesLazyRoute = FeaturesLazyImport.update({
+  path: '/features',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/features.lazy').then((d) => d.Route))
 
 const AboutLazyRoute = AboutLazyImport.update({
   path: '/about',
@@ -111,6 +117,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport
       parentRoute: typeof rootRoute
     }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/project/cubic-bezier-arrows': {
       id: '/project/cubic-bezier-arrows'
       path: '/project/cubic-bezier-arrows'
@@ -161,6 +174,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
   AboutLazyRoute,
+  FeaturesLazyRoute,
   ProjectCubicBezierArrowsLazyRoute,
   ProjectDynamicModalLazyRoute,
   ProjectFastCarouselLazyRoute,
@@ -179,6 +193,7 @@ export const routeTree = rootRoute.addChildren({
       "children": [
         "/",
         "/about",
+        "/features",
         "/project/cubic-bezier-arrows",
         "/project/dynamic-modal",
         "/project/fast-carousel",
@@ -192,6 +207,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/features": {
+      "filePath": "features.lazy.tsx"
     },
     "/project/cubic-bezier-arrows": {
       "filePath": "project/cubic-bezier-arrows.lazy.tsx"
