@@ -1,4 +1,5 @@
-import { useEffect, useRef, type JSX } from 'react'
+import type { JSX } from 'react'
+import { useEffect, useRef } from 'react'
 import { HorizontalList } from '../../HorizontalList/HorizontalList'
 import { useFastCarousel } from '../store/useFastCarousel'
 
@@ -19,8 +20,7 @@ export function ScrollerLayer({ items }: ScrollerLayerProps): JSX.Element {
     const scroller = scrollerRef.current
     if (!scroller) return
 
-    const activeLi = scroller.querySelectorAll('li')?.[index]
-    if (!activeLi) return
+    const activeLi = scroller.querySelectorAll('li')[index]
 
     const scrollerRect = scroller.getBoundingClientRect()
     const liRect = activeLi.getBoundingClientRect()

@@ -38,15 +38,18 @@ export const HorizontalListItem = memo(function HorizontalListItem({
 }) {
   return (
     <li
-      key={index}
-      className={classNames('h-full aspect-video cursor-pointer rounded-md', {
-        'ring-4 ring-white': isActive,
-      })}
+      className={classNames(
+        'h-full aspect-video cursor-pointer rounded-md transition-all duration-200',
+        {
+          'ring-4 ring-white': isActive,
+        },
+      )}
     >
       <img
         src={src}
         alt={`Thumbnail ${index + 1}`}
         className="w-full h-full object-cover rounded-md"
+        decoding="async"
       />
     </li>
   )

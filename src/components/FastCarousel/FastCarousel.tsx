@@ -1,4 +1,5 @@
-import { useEventListener } from 'usehooks-ts'
+import { memo } from 'react'
+import { useEventListener, useUnmount } from 'usehooks-ts'
 import { MediaLayer } from './layers/MediaLayer'
 import { ScrollerLayer } from './layers/ScrollerLayer'
 import { UiLayer } from './layers/UiLayer'
@@ -31,6 +32,10 @@ const coverSources = data.map((item) => ({
   alt: item.alt,
 }))
 
+const StaticOverlay = memo(() => (
+  <div className="absolute w-full aspect-video bg-linear-to-t from-black to-70% to-transparent z-10 pointer-events-none" />
+))
+
 function FastCarousel() {
   const scrollerIndex = useFastCarousel((state) => state.scrollerIndex)
   const coverIndex = useFastCarousel((state) => state.coverIndex)
@@ -51,13 +56,17 @@ function FastCarousel() {
     handleChangeIndex(index)
   })
 
+  useUnmount(() => {
+    useFastCarousel.getState().reset()
+  })
+
   return (
     <div className="relative w-screen aspect-video overflow-hidden flex flex-col">
       {/* Media Layer */}
       <MediaLayer images={coverSources} />
 
-      {/* Static overlay (NEVER changes) */}
-      <div className="absolute w-full aspect-video bg-linear-to-t from-black to-70% to-transparent z-10 pointer-events-none" />
+      {/* Static overlay (NEVER changes) - memoized to prevent repaints */}
+      <StaticOverlay />
 
       {/* UI Layer */}
       <UiLayer

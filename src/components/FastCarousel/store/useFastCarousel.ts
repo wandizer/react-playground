@@ -1,24 +1,10 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { createServerImpl } from './createImpl.server.ts'
+import type { FastCarouselState, FastCarouselStore } from './types.ts'
 
 export const TRANSITION_DURATION = 500
 export const DEBOUNCE_DURATION = 500
-
-type FastCarouselState = {
-  itemCount: number
-  coverIndex: number
-  scrollerIndex: number
-  isCoverReady: boolean
-  isVideoReady: boolean
-  isTransitioning: boolean
-}
-
-type FastCarouselActions = {
-  changeIndex: (index: number) => void
-  setIsCoverReady: (isReady: boolean) => void
-}
-
-type FastCarouselStore = FastCarouselState & FastCarouselActions
 
 export type TimeoutRef = ReturnType<typeof requestAnimationFrame> | undefined
 export const clearTimeoutRef = (timeoutRef: { current: TimeoutRef }) => {
@@ -57,81 +43,82 @@ const createAnimateFrame = (onComplete: OnAnimationComplete) => {
   return animate
 }
 
-export const useFastCarousel = create<FastCarouselStore>()(
-  devtools(
-    (set, get) => {
-      return {
-        // Initial state
-        coverIndex: 0,
-        scrollerIndex: 0,
-        isTransitioning: false,
-        isCoverReady: false,
-        isVideoReady: false,
-        // Actions
-        changeIndex: (index: number) => {
-          if (isServer) {
-            console.warn(
-              'Attempted to change index on server. This action is client-only.',
+const INITIAL_STATE: FastCarouselState = {
+  coverIndex: 0,
+  scrollerIndex: 0,
+  isCoverReady: false,
+  isVideoReady: false,
+  isTransitioning: false,
+}
+
+export const useFastCarousel = isServer
+  ? createServerImpl()
+  : create<FastCarouselStore>()(
+      devtools(
+        (set, get, api) => ({
+          // Initial state
+          ...INITIAL_STATE,
+          // Actions
+          changeIndex: (index: number) => {
+            // Do nothing if index is the same as current
+            if (index === get().scrollerIndex && index === get().coverIndex) {
+              return
+            }
+
+            // Clear any pending transition timeouts
+            clearTimeoutRef(timeOutSetCoverIndexRef)
+            clearTimeoutRef(timeOutSetIsVideoReady)
+
+            // Start transition: set scrollerIndex immediately, then after transition duration, update coverIndex
+            set({
+              scrollerIndex: index,
+              isTransitioning: true,
+              isCoverReady: false,
+              isVideoReady: false,
+            })
+
+            timeOutSetCoverIndexRef.current = requestAnimationFrame(
+              createAnimateFrame(() =>
+                set(
+                  { coverIndex: index, isTransitioning: false },
+                  false,
+                  'changeIndex/coverIndexChanged',
+                ),
+              ),
             )
-            return
-          }
+          },
 
-          // Do nothing if index is the same as current
-          if (index === get().scrollerIndex && index === get().coverIndex) {
-            return
-          }
+          reset: () => {
+            clearTimeoutRef(timeOutSetCoverIndexRef)
+            clearTimeoutRef(timeOutSetIsVideoReady)
+            set(api.getInitialState())
+          },
 
-          // Clear any pending transition timeouts
-          clearTimeoutRef(timeOutSetCoverIndexRef)
-          clearTimeoutRef(timeOutSetIsVideoReady)
+          setIsCoverReady: (isReady: boolean) => {
+            set({ isCoverReady: isReady })
 
-          // Start transition: set scrollerIndex immediately, then after transition duration, update coverIndex
-          set({
-            scrollerIndex: index,
-            isTransitioning: true,
-            isCoverReady: false,
-            isVideoReady: false,
-          })
-
-          timeOutSetCoverIndexRef.current = requestAnimationFrame(
-            createAnimateFrame(() =>
-              set(
-                { coverIndex: index, isTransitioning: false },
-                false,
-                'changeIndex/coverIndexChanged',
+            if (!isReady) return
+            timeOutSetIsVideoReady.current = requestAnimationFrame(
+              createAnimateFrame(() =>
+                set(
+                  { isVideoReady: true },
+                  false,
+                  'setIsCoverReady/isVideoReady',
+                ),
               ),
-            ),
-          )
-
-          // TimeOut for
-        },
-
-        setIsCoverReady: (isReady: boolean) => {
-          set({ isCoverReady: isReady })
-
-          if (!isReady) return
-          timeOutSetIsVideoReady.current = requestAnimationFrame(
-            createAnimateFrame(() =>
-              set(
-                { isVideoReady: true },
-                false,
-                'setIsCoverReady/isVideoReady',
-              ),
-            ),
-          )
-        },
-      }
-    },
-    {
-      name: 'FastCarouselStore',
-      serialize: {
-        options: {
+            )
+          },
+        }),
+        {
           name: 'FastCarouselStore',
-          // Avoid serializing functions and complex objects in devtools
-          skip: (_key: unknown, value: unknown) =>
-            typeof value === 'function' || typeof value === 'object',
+          serialize: {
+            options: {
+              name: 'FastCarouselStore',
+              // Avoid serializing functions and complex objects in devtools
+              skip: (_key: unknown, value: unknown) =>
+                typeof value === 'function' || typeof value === 'object',
+            },
+          },
         },
-      },
-    },
-  ),
-)
+      ),
+    )
