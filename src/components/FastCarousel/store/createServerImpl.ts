@@ -7,21 +7,47 @@ const throwErrorOnServerCall = (method: string) => {
 }
 
 /**
- * This function creates a server-side implementation of the FastCarousel store without
- * using zustand's create() since it relies on client-side features. Instead, it returns a hook
- * that allows reading the initial state and logs warnings for any attempted updates.
+ * Server-side implementation of a Zustand store creator function.
  *
- * Signature matches zustand's create() for drop-in compatibility with devtools and other middleware.
+ * It does not create a real store since that relies on client-side features, and
+ * to avoids server data leakage (e.g. concurrent server instance loading the same
+ * store, which might be problematic). Instead, it returns a stub version of the
+ * create() function that only allows reading the initial state (read-only), and
+ * directly throws an error if trying to mutate the state or subscribe to changes.
+ *
+ * This is useful for server-side rendering (SSR) scenarios where you want to use
+ * the same store definition on both client and server, but only allow state updates
+ * on the client.
+ *
+ * Signature matches zustand's create() for drop-in compatibility with other middleware,
+ * and keeps the same API shape for the returned hook, by slightly modifying the API
+ * object passed to the state creator function to replace the set and subscribe methods
+ * with error-throwing functions.
  *
  * @param stateCreator - State creator function that initializes the store
  * @returns A hook-like function that accepts an optional selector
  *
  * @example
- * const useFastCarousel = createServerImpl((set, get, api) => ({ ... }))
- * const coverIndex = useFastCarousel((state) => state.coverIndex)
- * console.log(coverIndex) // 0
- * useFastCarousel.getState().changeIndex(1) // Throws error on server
+ * // useStore.ts
+ * const isServer = typeof window === 'undefined';
+ * const createImpl = isServer ? createServerImpl : create // Zustand's create()
+ * const useStore = createImpl((set, get, api) => ({
+ *     foo: 'bar',
+ *     setFoo: (value) => set({ foo: value })
+ *   })
+ * )
  *
+ * // MyComponent.tsx
+ * // ✅ Usage in server side
+ * const foo = useStore((state) => state.foo) // Always returns initial state on server
+ * const setFoo = useStore((state) => state.setFoo) // Returns error-throwing function on server
+ * useStore.getState().foo // Always returns initial state on server
+ *
+ * // ❌ Attempting to update state on server throws error
+ * setFoo('toto') // Throws error on server
+ * useFastCarousel.getState().setFoo('toto') // Throws error on server
+ * useFastCarousel.setState({ foo: 'toto' }) // Throws error on server
+ * useFastCarousel.subscribe(() => {}) // Throws error on server
  */
 export const createServerImpl = <T>(
   stateCreatorFn: StateCreator<T, [], any>,
