@@ -9,6 +9,9 @@ export type FastCarouselState = {
   indexActive: number
   indexDisplay: number
   items: CarouselItem[]
+  // exposes current decoded images for canvas
+  _bufferedImage: HTMLImageElement | null
+  _previousImage: HTMLImageElement | null
 }
 
 export type FastCarouselActions = {
@@ -54,7 +57,7 @@ export function createFastCarouselStore(
           autoAdvanceTimeout = setTimeout(() => {
             if (originalRequestId !== requestIdCounter) return
             const nextIndex = get().indexActive + 1
-            if (nextIndex >= get().items.length - 1) return
+            if (nextIndex >= get().items.length) return
 
             get().changeIndex(nextIndex)
           }, AUTO_ADVANCE_DURATION)
@@ -64,6 +67,10 @@ export function createFastCarouselStore(
           indexActive: initProps?.indexActive ?? INITIAL_STATE.indexActive,
           indexDisplay: initProps?.indexDisplay ?? INITIAL_STATE.indexDisplay,
           items: initProps?.items ?? INITIAL_STATE.items,
+
+          // exposes current decoded images for canvas
+          _bufferedImage: null,
+          _previousImage: null,
 
           changeIndex: async (index) => {
             const currentRequestId = ++requestIdCounter
@@ -76,13 +83,18 @@ export function createFastCarouselStore(
 
             // 2. Pre-Load image
             const src = get().items[index].cover
-            preloadImage(src, () => {
+            preloadImage(src, (img) => {
               onLoadAnimationFrame = requestAnimationFrame(() => {
                 // If a newer call happened → ignore this one
                 if (currentRequestId !== requestIdCounter) return
 
                 // 3. Update display AFTER image is ready
-                set({ indexDisplay: index })
+                const previousImage = get()._bufferedImage
+                set({
+                  indexDisplay: index,
+                  _previousImage: previousImage ?? img,
+                  _bufferedImage: img,
+                })
 
                 // 4. Auto-Advance to next after a delay if not last item
                 if (index >= get().items.length - 1) return

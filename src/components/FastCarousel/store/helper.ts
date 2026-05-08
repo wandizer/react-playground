@@ -5,11 +5,14 @@
  * @param src - The source URL of the image to preload
  * @param onLoad - Optional callback fired after the image has loaded successfully
  * @example
- *   preloadImage('/path/to/image.jpg', () => {
- *     console.log('image loaded')
+ *   preloadImage('/path/to/image.jpg', (img) => {
+ *     console.log('image loaded', img.src)
  *   })
  */
-export function preloadImage(src: string, onLoad?: () => void) {
+export function preloadImage(
+  src: string,
+  onLoad?: (img: HTMLImageElement) => void,
+) {
   let done = false
   const img = new Image()
 
@@ -18,7 +21,7 @@ export function preloadImage(src: string, onLoad?: () => void) {
     done = true
     img.onload = null
     img.onerror = null
-    onLoad?.()
+    onLoad?.(img)
   }
 
   img.onload = finish
@@ -28,6 +31,6 @@ export function preloadImage(src: string, onLoad?: () => void) {
 
   // Handle cached images - img.complete is true if already loaded
   if (img.complete) {
-    onLoad?.()
+    onLoad?.(img)
   }
 }
