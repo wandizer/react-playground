@@ -58,6 +58,8 @@ export function MediaLayer() {
         _bufferedImage: fallbackImage,
         _previousImage: fallbackImage,
       })
+      // Start auto-advance after initial load
+      storeFastCarousel?.getState().autoAdvance(0)
       return
     }
 

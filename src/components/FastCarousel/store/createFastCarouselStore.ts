@@ -5,6 +5,11 @@ import type { CarouselItem } from './types.ts'
 
 const AUTO_ADVANCE_DURATION = 10_000
 
+const isServer =
+  typeof window === 'undefined' ||
+  typeof window.document === 'undefined' ||
+  typeof window.document.createElement === 'undefined'
+
 export type FastCarouselState = {
   indexActive: number
   indexDisplay: number
@@ -18,6 +23,7 @@ export type FastCarouselActions = {
   changeIndex: (index: number) => void
   incrementIndex: () => void
   decrementIndex: () => void
+  autoAdvance: (originalRequestId: number) => void
 }
 
 export type FastCarouselStore = FastCarouselState & FastCarouselActions
@@ -32,6 +38,7 @@ export function createFastCarouselStore(
   initProps?: Partial<FastCarouselState>,
 ) {
   let requestIdCounter = 0 // helps cancel outdated async work
+  let abortImagePreload: (() => void) | null = null
   let autoAdvanceTimeout: ReturnType<typeof setTimeout> | null = null
   let onLoadAnimationFrame: ReturnType<typeof requestAnimationFrame> | null =
     null
@@ -40,6 +47,11 @@ export function createFastCarouselStore(
     devtools(
       (set, get, _api) => {
         const _clearPreviousComputing = () => {
+          // Cancel previous image preload
+          if (abortImagePreload) {
+            abortImagePreload()
+            abortImagePreload = null
+          }
           // Cancel previous animation frame
           if (onLoadAnimationFrame) {
             cancelAnimationFrame(onLoadAnimationFrame)
@@ -52,17 +64,6 @@ export function createFastCarouselStore(
           }
         }
 
-        const _autoAdvance = (originalRequestId: number) => {
-          _clearPreviousComputing()
-          autoAdvanceTimeout = setTimeout(() => {
-            if (originalRequestId !== requestIdCounter) return
-            const nextIndex = get().indexActive + 1
-            if (nextIndex >= get().items.length) return
-
-            get().changeIndex(nextIndex)
-          }, AUTO_ADVANCE_DURATION)
-        }
-
         return {
           indexActive: initProps?.indexActive ?? INITIAL_STATE.indexActive,
           indexDisplay: initProps?.indexDisplay ?? INITIAL_STATE.indexDisplay,
@@ -72,7 +73,20 @@ export function createFastCarouselStore(
           _bufferedImage: null,
           _previousImage: null,
 
+          autoAdvance: (originalRequestId: number) => {
+            _clearPreviousComputing()
+            autoAdvanceTimeout = setTimeout(() => {
+              if (originalRequestId !== requestIdCounter) return
+              const nextIndex = get().indexActive + 1
+              if (nextIndex >= get().items.length) return
+              get().changeIndex(nextIndex)
+            }, AUTO_ADVANCE_DURATION)
+          },
+
           changeIndex: async (index) => {
+            if (isServer) return
+            if (index === get().indexActive) return
+
             const currentRequestId = ++requestIdCounter
 
             // 0. Clear previous timeouts and async work
@@ -83,24 +97,33 @@ export function createFastCarouselStore(
 
             // 2. Pre-Load image
             const src = get().items[index].cover
-            preloadImage(src, (img) => {
-              onLoadAnimationFrame = requestAnimationFrame(() => {
-                // If a newer call happened → ignore this one
-                if (currentRequestId !== requestIdCounter) return
+            const { abort } = preloadImage(
+              src,
+              (img) => {
+                onLoadAnimationFrame = requestAnimationFrame(() => {
+                  // If a newer call happened → ignore this one
+                  if (currentRequestId !== requestIdCounter) return
 
-                // 3. Update display AFTER image is ready
-                const previousImage = get()._bufferedImage
-                set({
-                  indexDisplay: index,
-                  _previousImage: previousImage ?? img,
-                  _bufferedImage: img,
+                  // 3. Update display AFTER image is ready
+                  const previousImage = get()._bufferedImage
+                  set({
+                    indexDisplay: index,
+                    _previousImage: previousImage ?? img,
+                    _bufferedImage: img,
+                  })
+
+                  // 4. Auto-Advance to next after a delay if not last item
+                  if (index >= get().items.length - 1) return
+                  get().autoAdvance(currentRequestId)
                 })
+              },
+              { abortable: true },
+            )
 
-                // 4. Auto-Advance to next after a delay if not last item
-                if (index >= get().items.length - 1) return
-                _autoAdvance(currentRequestId)
-              })
-            })
+            // Save abort function to cancel if user changes index before load completes
+            if (abort) {
+              abortImagePreload = abort
+            }
           },
 
           decrementIndex: () => {
