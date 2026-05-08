@@ -1,61 +1,77 @@
-import { useEffect, useRef, useState } from 'react'
-import { useFastCarousel } from '../store/useFastCarousel'
-import { Cover } from './Cover'
+import classNames from 'classnames'
+import { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { FastCarouselContext } from '../store/context.tsx'
+import { useFastCarouselContext } from '../store/useFastCarouselContext.ts'
 
 type Image = {
   src: string
   alt?: string
 }
 
-type MediaLayerProps = {
-  images: Image[]
-}
+export function MediaLayer() {
+  const storeFastCarousel = useContext(FastCarouselContext)
+  const indexDisplay = useFastCarouselContext((state) => state.indexDisplay)
 
-export function MediaLayer({ images }: MediaLayerProps) {
-  const [activeBuffer, setActiveBuffer] = useState<'a' | 'b'>('a')
+  const images = useMemo(() => {
+    if (!storeFastCarousel) return []
+    const state = storeFastCarousel.getState()
+    return state.items.map((item) => ({
+      src: item.cover,
+      alt: item.alt,
+    }))
+  }, [storeFastCarousel])
+
+  const [activeBuffer, setActiveBuffer] = useState<'A' | 'B'>('A')
   const [bufferA, setBufferA] = useState<Image>(images[0])
   const [bufferB, setBufferB] = useState<Image>(images[0])
-  const coverIndex = useFastCarousel((state) => state.coverIndex)
-  const previousCoverIndex = useRef(coverIndex)
+  const previousIndexDisplay = useRef(indexDisplay)
 
   useEffect(() => {
-    if (coverIndex === previousCoverIndex.current) {
+    if (indexDisplay === previousIndexDisplay.current) {
       return
     }
 
-    const activeImage = images[coverIndex]
-
-    if (activeBuffer === 'a') {
-      setBufferB(activeImage)
+    if (activeBuffer === 'A') {
+      setBufferB(images[indexDisplay])
     } else {
-      setBufferA(activeImage)
+      setBufferA(images[indexDisplay])
     }
-
     // Toggle active buffer
-    setActiveBuffer((prev) => (prev === 'a' ? 'b' : 'a'))
-    previousCoverIndex.current = coverIndex
-  }, [coverIndex, images, activeBuffer])
+    setActiveBuffer((prev) => (prev === 'A' ? 'B' : 'A'))
+    previousIndexDisplay.current = indexDisplay
+  }, [indexDisplay, images, activeBuffer])
 
   return (
     <>
       {/* Buffer A */}
-      {bufferA && (
-        <Cover
-          key={bufferA.src + '-buffer-a'}
-          src={bufferA.src}
-          alt={bufferA.alt || ''}
-          isVisible={activeBuffer === 'a'}
-        />
-      )}
+      <img
+        className={classNames(
+          'absolute w-full aspect-video h-full',
+          'bg-no-repeat bg-center object-cover',
+          'transition-opacity duration-500 ease-linear',
+          {
+            'opacity-0': activeBuffer !== 'A',
+            'delay-500 opacity-100': activeBuffer === 'A',
+          },
+        )}
+        src={bufferA.src}
+        alt={bufferA.alt || ''}
+      />
+
       {/* Buffer B */}
-      {bufferB && (
-        <Cover
-          key={bufferB.src + '-buffer-b'}
-          src={bufferB.src}
-          alt={bufferB.alt || ''}
-          isVisible={activeBuffer === 'b'}
-        />
-      )}
+      <img
+        className={classNames(
+          'absolute w-full aspect-video h-full',
+          'bg-no-repeat bg-center object-cover',
+          'transition-opacity duration-500 ease-linear',
+          {
+            'opacity-0': activeBuffer !== 'B',
+            'delay-500 opacity-100': activeBuffer === 'B',
+          },
+        )}
+        src={bufferB.src}
+        alt={bufferB.alt || ''}
+      />
     </>
   )
 }

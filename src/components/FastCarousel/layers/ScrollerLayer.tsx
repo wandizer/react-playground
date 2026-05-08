@@ -1,20 +1,23 @@
 import type { JSX } from 'react'
-import { useEffect, useRef } from 'react'
+import { useContext, useEffect, useMemo, useRef } from 'react'
 import { HorizontalList } from '../../HorizontalList/HorizontalList'
-import { useFastCarousel } from '../store/useFastCarousel'
+import { FastCarouselContext } from '../store/context.tsx'
+import { useFastCarouselContext } from '../store/useFastCarouselContext.ts'
 
-type ScrollerItem = {
-  id: string
-  src: string
-}
+export function ScrollerLayer(): JSX.Element {
+  const storeFastCarousel = useContext(FastCarouselContext)
+  const indexActive = useFastCarouselContext((state) => state.indexActive)
 
-type ScrollerLayerProps = {
-  items: ScrollerItem[]
-}
+  const items = useMemo(() => {
+    if (!storeFastCarousel) return []
+    const state = storeFastCarousel.getState()
+    return state.items.map((item) => ({
+      id: String(item.id),
+      src: item.thumbnail,
+    }))
+  }, [storeFastCarousel])
 
-export function ScrollerLayer({ items }: ScrollerLayerProps): JSX.Element {
   const scrollerRef = useRef<HTMLDivElement>(null)
-  const scrollerIndex = useFastCarousel((state) => state.scrollerIndex)
 
   const scrollAndAlignLeft = (index: number) => {
     const scroller = scrollerRef.current
@@ -36,14 +39,10 @@ export function ScrollerLayer({ items }: ScrollerLayerProps): JSX.Element {
     const scroller = scrollerRef.current
     if (!scroller) return
 
-    scrollAndAlignLeft(scrollerIndex)
-  }, [scrollerIndex])
+    scrollAndAlignLeft(indexActive)
+  }, [indexActive])
 
   return (
-    <HorizontalList
-      ref={scrollerRef}
-      activeIndex={scrollerIndex}
-      items={items}
-    />
+    <HorizontalList ref={scrollerRef} activeIndex={indexActive} items={items} />
   )
 }

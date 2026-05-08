@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { TRANSITION_DURATION, useFastCarousel } from '../store/useFastCarousel'
+import { useFastCarousel } from '../store/deprecated/useFastCarousel.ts'
 
 type CoverProps = {
   isVisible?: boolean
@@ -26,21 +26,18 @@ export function Cover({ isVisible, src, alt }: CoverProps) {
     }
   }, [isVisible])
 
-  const style = { transitionDuration: `${TRANSITION_DURATION}ms` }
-
   return (
     <img
       ref={imageRef}
       className={classNames(
         'absolute w-full aspect-video h-full',
         'bg-no-repeat bg-center object-cover',
-        'transition-opacity ease-linear',
+        'transition-opacity duration-500 ease-linear',
         {
           'opacity-0': !isVisible || !isReady,
           'opacity-100': isVisible && isReady,
         },
       )}
-      style={style}
       onLoad={handleOnReady}
       onError={handleOnReady}
       src={src}

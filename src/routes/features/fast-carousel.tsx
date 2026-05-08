@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import FastCarousel from "../../components/FastCarousel/FastCarousel";
+import { createFileRoute } from '@tanstack/react-router'
+import { FastCarouselContainer } from '../../components/FastCarousel/FastCarouselContainer.tsx'
 
-export const Route = createFileRoute("/features/fast-carousel")({
-  component: FastCarousel,
-});
+export const Route = createFileRoute('/features/fast-carousel')({
+  component: FastCarouselContainer,
+})

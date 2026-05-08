@@ -1,82 +1,43 @@
 import { memo } from 'react'
-import { useEventListener, useUnmount } from 'usehooks-ts'
-import { MediaLayer } from './layers/MediaLayer'
-import { ScrollerLayer } from './layers/ScrollerLayer'
-import { UiLayer } from './layers/UiLayer'
-import type { CarouselItem } from './store/types.ts'
-import { useFastCarousel } from './store/useFastCarousel'
-
-const data: CarouselItem[] = Array.from({ length: 20 }, (_, i) => ({
-  id: i,
-  title: `Item ${i + 1}`,
-  alt: `Alt ${i + 1}`,
-  description:
-    i % 2 === 0
-      ? `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua.`
-      : `Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
-      nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-      reprehenderit in voluptate velit esse`,
-  buttonText: i % 2 === 0 ? 'Read more' : 'Watch now',
-  thumbnail: `https://picsum.photos/id/${i + 10}/640/480`,
-  cover: `https://picsum.photos/id/${i + 10}/1920/1080`,
-}))
-
-const scrollerItems = data.map((item) => ({
-  id: String(item.id),
-  src: item.thumbnail,
-}))
-
-const coverSources = data.map((item) => ({
-  src: item.cover,
-  alt: item.alt,
-}))
+import { useEventListener } from 'usehooks-ts'
+import { MediaLayer } from './layers/MediaLayer.tsx'
+import { ScrollerLayer } from './layers/ScrollerLayer.tsx'
+import { UiLayer } from './layers/UiLayer.tsx'
+import { useFastCarouselContext } from './store/useFastCarouselContext.ts'
 
 const StaticOverlay = memo(() => (
   <div className="absolute w-full aspect-video bg-linear-to-t from-black to-70% to-transparent z-10 pointer-events-none" />
 ))
 
 function FastCarousel() {
-  const scrollerIndex = useFastCarousel((state) => state.scrollerIndex)
-  const coverIndex = useFastCarousel((state) => state.coverIndex)
-  const activeItem = data[coverIndex]
-
-  const handleChangeIndex = (index: number) => {
-    const maxIndex = data.length - 1
-    const boundedTargetIndex = Math.max(0, Math.min(maxIndex, index))
-    useFastCarousel.getState().changeIndex(boundedTargetIndex)
-  }
+  const incrementIndex = useFastCarouselContext((state) => state.incrementIndex)
+  const decrementIndex = useFastCarouselContext((state) => state.decrementIndex)
 
   useEventListener('keydown', (event) => {
     if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) {
       return
     }
     const direction = event.key === 'ArrowLeft' ? 'left' : 'right'
-    const index = direction === 'left' ? scrollerIndex - 1 : scrollerIndex + 1
-    handleChangeIndex(index)
-  })
-
-  useUnmount(() => {
-    useFastCarousel.getState().reset()
+    if (direction === 'left') {
+      decrementIndex()
+    } else {
+      incrementIndex()
+    }
   })
 
   return (
     <div className="relative w-screen aspect-video overflow-hidden flex flex-col">
       {/* Media Layer */}
-      <MediaLayer images={coverSources} />
+      <MediaLayer />
 
       {/* Static overlay (NEVER changes) - memoized to prevent repaints */}
       <StaticOverlay />
 
       {/* UI Layer */}
-      <UiLayer
-        title={activeItem.title}
-        buttonText={activeItem.buttonText}
-        description={activeItem.description}
-      />
+      <UiLayer />
 
       {/* Horizontal list with thumbnails */}
-      <ScrollerLayer items={scrollerItems} />
+      <ScrollerLayer />
     </div>
   )
 }
