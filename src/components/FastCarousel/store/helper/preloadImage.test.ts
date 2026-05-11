@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { preloadImage } from './helper.ts'
+import { preloadImage } from './preloadImage.ts'
 
 describe('preloadImage', () => {
   interface IMockImage {

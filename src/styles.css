@@ -5,6 +5,20 @@
 @theme {
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   --color-primary: var(--primary);
+
+  /* Animation */
+  --animate-fill-progress: 0%;
+  --animate-fill-end: 100%;
+  --animate-fill: fill 500ms linear forwards;
+
+  @keyframes fill {
+    from {
+      transform: translateX(calc(var(--animate-fill-progress) - 100%));
+    }
+    to {
+      transform: translateX(0%);
+    }
+  }
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

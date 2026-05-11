@@ -141,7 +141,7 @@ function _abortableXHR(
  *   // To cancel the preload if it's no longer needed
  *   abort()
  */
-export function fetchImageWithAbort(
+function fetchImageWithAbort(
   img: HTMLImageElement,
   src: string,
 ): { abort: () => void } {
@@ -160,7 +160,7 @@ export function fetchImageWithAbort(
       })
       .catch((error) => {
         if (error.name !== 'AbortError') {
-          console.error('Image preload failed', error)
+          console.error('Image preload failed', { error, src })
         }
         img.src = src // Fallback to direct src if fetch fails
       })
