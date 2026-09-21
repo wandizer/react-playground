@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="GitLab and Trello inspired picto">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <linearGradient id="gl" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fc6d26"/>
+      <stop offset="60%" stop-color="#e24329"/>
+      <stop offset="100%" stop-color="#c71f1f"/>
+    </linearGradient>
+    <linearGradient id="tr" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <clipPath id="badgeClip">
+      <rect x="56" y="56" width="400" height="400" rx="96" ry="96"/>
+    </clipPath>
+  </defs>
+
+  <rect x="56" y="56" width="400" height="400" rx="96" ry="96" fill="url(#bg)"/>
+
+  <g clip-path="url(#badgeClip)">
+    <rect x="56" y="56" width="200" height="400" fill="#0b0f19" opacity="0.38"/>
+    <rect x="256" y="56" width="200" height="400" fill="#0b0f19" opacity="0.24"/>
+
+    <!-- Left: GitLab-inspired angular mark (cropped) -->
+    <g transform="translate(72 98)">
+      <path d="M130 14l38 112H92l38-112z" fill="#fca326"/>
+      <path d="M58 126h220l-110 140L58 126z" fill="url(#gl)"/>
+      <path d="M22 126l36-112 34 112H22z" fill="#e24329"/>
+      <path d="M244 126l-36-112-34 112h70z" fill="#e24329"/>
+      <path d="M58 126l-28 86 138 54L58 126z" fill="#fc6d26"/>
+      <path d="M278 126l28 86-138 54 110-140z" fill="#fc6d26"/>
+    </g>
+
+    <!-- Right: Trello-inspired rounded columns (cropped) -->
+    <g transform="translate(282 124)">
+      <rect x="0" y="0" width="156" height="264" rx="26" fill="#082f49" opacity="0.55"/>
+      <rect x="20" y="24" width="52" height="176" rx="14" fill="url(#tr)"/>
+      <rect x="84" y="24" width="52" height="120" rx="14" fill="#67e8f9"/>
+    </g>
+  </g>
+
+  <rect x="56" y="56" width="400" height="400" rx="96" ry="96" fill="none" stroke="#38bdf8" stroke-opacity="0.35" stroke-width="4"/>
+</svg>
