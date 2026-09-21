@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
+    "build:extension": "vite build --config vite.extension.config.ts",
+    "build:extension:zip": "yarn build:extension && rm -f dist/chrome-extension.zip && cd dist && zip -r chrome-extension.zip chrome-extension",
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint",

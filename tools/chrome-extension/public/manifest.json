@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Trello API Extension Skeleton",
+  "description": "Minimal Chrome extension scaffold with Trello API wiring.",
+  "version": "0.0.1",
+  "action": {
+    "default_title": "Trello API",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://api.trello.com/*"]
+}
